@@ -1,6 +1,10 @@
 class ResponseEvaluationService:
     def __init__(self):
         pass
-    
-    def evaluate(self, question: str, response: str) -> str:
+
+    def evaluate(
+        self,
+        question: str,
+        response: str
+    ) -> str:
         pass
