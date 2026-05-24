@@ -24,14 +24,13 @@ def export_collection(collection_name: str = "UstnApp") -> list[dict]:
             limit=100,
             offset=offset,
             with_payload=True,
-            with_vectors=True,
+            with_vectors=False,
         )
 
         for point in results:
             all_points.append({
                 "id": point.id if not hasattr(point.id, '__dict__') else str(point.id),
-                "payload": point.payload,
-                "vector": point.vector,
+                "payload": point.payload
             })
 
         print(f"  Downloaded {len(all_points)} points...")
