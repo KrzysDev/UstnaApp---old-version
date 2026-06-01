@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.routers.question_router import router as question_router
+from api.routers.response_evaluation_router import router as response_evaluation_router
 
 app = FastAPI(
     title="UstnaApp API",
-    description="API for preparing students for the oral Polish matura exam",
+    description="API for preparing students for the oral Polish matura exam -",
     version="1.0.0"
 )
 
@@ -18,6 +19,7 @@ app.add_middleware(
 )
 
 app.include_router(question_router, prefix="/api")
+app.include_router(response_evaluation_router, prefix="/api")
 
 @app.get("/")
 def read_root():
