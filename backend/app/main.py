@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.routers.question_router import router as question_router
-from api.routers.response_evaluation_router import router as response_evaluation_router
+from app.api.routers.response_evaluation_router import router as response_evaluation_router
 
 app = FastAPI(
     title="UstnaApp API",
@@ -9,7 +9,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configure CORS for Flutter client communication
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
