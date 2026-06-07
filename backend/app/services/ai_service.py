@@ -6,14 +6,14 @@ from ollama import Client
 
 
 class AiService:
-    def __init__(self, model: str = "deepseek-v4-pro:cloud"):
+    def __init__(self, testing_model: str = "deepseek-v4-pro:cloud", production_model: str = "deepseek/deepseek-v4-pro"):
         self._load_env()
         self.ai_testing = self._get_bool_env("AI_TESTING", default=True)
 
         if self.ai_testing:
-            self._init_ollama(model)
+            self._init_ollama(testing_model)
         else:
-            self._init_openrouter(model)
+            self._init_openrouter(production_model)
 
     def _load_env(self):
         load_dotenv(find_dotenv())
