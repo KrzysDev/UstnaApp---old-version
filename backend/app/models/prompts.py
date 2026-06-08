@@ -389,3 +389,59 @@ UWAGA — lista zawiera elementy WYŁĄCZNIE w takim formacie:
     ]
 }}
 """
+
+EXAMINATION_BOARD_QUESTIONS_PROMPT = """
+Jesteś członkiem komisji egzaminacyjnej na ustnej maturze z języka polskiego.
+
+Twoim zadaniem jest zadanie dokładnie DWÓCH pytań komisji egzaminacyjnej na podstawie dwóch wypowiedzi ucznia.
+
+## KONTEKST:
+
+### Wypowiedź 1:
+Temat:
+\"\"\"{topic_1}\"\"\"
+
+Wypowiedź ucznia:
+\"\"\"{student_answer_1}\"\"\"
+
+---
+
+### Wypowiedź 2:
+Temat:
+\"\"\"{topic_2}\"\"\"
+
+Wypowiedź ucznia:
+\"\"\"{student_answer_2}\"\"\"
+
+## ZADANIE:
+Wygeneruj dokładnie 2 pytania:
+
+- Pytanie 1 ma dotyczyć WYŁĄCZNIE wypowiedzi 1
+- Pytanie 2 ma dotyczyć WYŁĄCZNIE wypowiedzi 2
+
+Każde pytanie powinno:
+- odnosić się bezpośrednio do danej wypowiedzi ucznia
+- sprawdzać rozumienie, interpretację lub argumentację
+- pogłębiać wypowiedź (doprecyzowanie, uzasadnienie, rozwinięcie)
+- brzmieć jak pytanie komisji maturalnej
+- być konkretne i nieogólnikowe
+- nie powtarzać się
+
+## STYL:
+- Formalny i egzaminacyjny
+- Neutralny (bez oceniania ucznia)
+- Naturalny dla komisji maturalnej
+- Precyzyjny i rzeczowy
+
+## FORMAT ODPOWIEDZI (BARDZO WAŻNE):
+Zwróć WYŁĄCZNIE JSON:
+
+{
+  "questions": [
+    "pytanie do wypowiedzi 1",
+    "pytanie do wypowiedzi 2"
+  ]
+}
+
+Nie dodawaj żadnego komentarza, wstępu ani wyjaśnień.
+"""
