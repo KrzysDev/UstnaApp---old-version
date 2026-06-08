@@ -2,6 +2,7 @@
 
 from pydantic import BaseModel
 from typing import Literal
+from fastapi import File
 
 
 class EvaluationRequest(BaseModel):
@@ -15,10 +16,17 @@ class EvaluationRequest(BaseModel):
     response2: str
 
 
+from pydantic import BaseModel
+from typing import Literal, Optional
+
+
 class Question(BaseModel):
     question: str
-    question_type: Literal["text", "image"]
-    image_path: str = None
+    question_type: Literal["text", "image", "poem"]
+    
+    image_base64: Optional[str] = None      
+    image_mime_type: Optional[str] = None          
+    image_filename: Optional[str] = None
 
 
 class SetOfQuestionsResponse(BaseModel):
