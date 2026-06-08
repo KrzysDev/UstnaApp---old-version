@@ -1,4 +1,3 @@
-
 from app.models.prompts import CONTEXT_SYNTHESIS_PROMPT
 from app.services.ai_service import AiService
 from app.services.vector_db_service import VectorDBService
@@ -12,10 +11,10 @@ class ResponseEvaluationService:
     def evaluate(
         self,
         question: str,
-        response: str,  # pełna wypowiedź ucznia (2 zadania + rozmowa)
+        response: str,
         examination_board_question1: str = "",
         examination_board_question2: str = "",
-        examination_board_answers: str = "",  # <-- JEDNO pole zamiast dwóch
+        examination_board_answers: str = "",
         question2: str = ""
     ) -> str:
 
@@ -24,12 +23,11 @@ class ResponseEvaluationService:
         retrieval_queries = self.ai_service.ask(
             RETRIEVAL_QUERY_GENERATION_PROMPT.format(
                 exam_question=question,
-                student_answer=response,
                 exam_question2=question2,
-
+                student_answer=response,
                 examination_board_question1=examination_board_question1,
                 examination_board_question2=examination_board_question2,
-                examination_board_answers=examination_board_answers,
+                examination_board_questions_answer=examination_board_answers,
             )
         )
 
@@ -44,13 +42,12 @@ class ResponseEvaluationService:
         reranked_context = self.ai_service.ask(
             CONTEXT_SYNTHESIS_PROMPT.format(
                 exam_question=question,
-                student_answer=response,
                 exam_question2=question2,
+                student_answer=response,
                 filtered_chunks=documents,
-
                 examination_board_question1=examination_board_question1,
                 examination_board_question2=examination_board_question2,
-                examination_board_answers=examination_board_answers,
+                examination_board_questions_answer=examination_board_answers,
             )
         )
 
@@ -61,10 +58,9 @@ class ResponseEvaluationService:
             exam_question2=question2,
             student_answer=response,
             rag_context=reranked_context,
-
             examination_board_question1=examination_board_question1,
             examination_board_question2=examination_board_question2,
-            examination_board_answer=examination_board_answers,  # <-- mapowanie do prompta
+            examination_board_answer=examination_board_answers,
         )
 
         return self.ai_service.ask(evaluation_prompt)

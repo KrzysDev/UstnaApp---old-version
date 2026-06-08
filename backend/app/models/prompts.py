@@ -10,12 +10,19 @@ Baza wiedzy zawiera:
 - przykłady wypowiedzi maturalnych
 - konteksty literackie, historyczne i kulturowe
 
-#PYTANIE EGZAMINACYJNE
+#ZADANIE EGZAMINACYJNE 1
 <exam_question>
 {exam_question}
 </exam_question>
 
+#ZADANIE EGZAMINACYJNE 2
+Jeśli to pole jest puste, zignoruj je.
+<exam_question2>
+{exam_question2}
+</exam_question2>
+
 #WYPOWIEDŹ UCZNIA
+Poniższa wypowiedź zawiera odpowiedź ucznia na jedno lub oba zadania egzaminacyjne.
 <student_answer>
 {student_answer}
 </student_answer>
@@ -23,10 +30,9 @@ Baza wiedzy zawiera:
 #PRZEBIEG ROZMOWY Z KOMISJĄ
 <dialogue_transcript>
 Egzaminator: {examination_board_question1}
-Uczeń: {examination_board_question11_answer}
-
 Egzaminator: {examination_board_question2}
-Uczeń: {examination_board_question12_answer}
+
+Uczeń: {examination_board_questions_answer}
 </dialogue_transcript>
 
 #INSTRUKCJA
@@ -79,18 +85,18 @@ Nie dodawaj nic poza tablicą JSON.
 
 Przykład:
 [
-  {
+  {{
     "id": "chunk_001",
     "relevance_score": 9,
     "keep": true,
     "reason": "Fragment zawiera dokładne zasady przyznawania punktów w kryterium 1. dla zadania 1."
-  },
-  {
+  }},
+  {{
     "id": "chunk_002",
     "relevance_score": 3,
     "keep": false,
     "reason": "Fragment dotyczy innej lektury niż wskazana w pytaniu."
-  }
+  }}
 ]
 """
 
@@ -122,10 +128,9 @@ Poniższa wypowiedź zawiera odpowiedź ucznia na jedno lub oba zadania egzamina
 Poniższy zapis przedstawia pytania zadane przez komisję egzaminacyjną oraz odpowiedzi udzielone przez ucznia (jeśli te pola są puste, zignoruj je):
 <dialogue_transcript>
 Egzaminator: {examination_board_question1}
-Uczeń: {examination_board_question11_answer}
-
 Egzaminator: {examination_board_question2}
-Uczeń: {examination_board_question12_answer}
+
+Uczeń: {examination_board_questions_answer}
 </dialogue_transcript>
 
 #WYSELEKCJONOWANE FRAGMENTY
