@@ -3,38 +3,25 @@ RETRIEVAL_QUERY_GENERATION_PROMPT = """
 Jesteś asystentem systemu RAG wspierającego ocenianie matury ustnej z języka polskiego.
 
 Twoim zadaniem jest wygenerowanie zestawu zapytań semantycznych do bazy wiedzy,
-które pozwolą pobrać fragmenty niezbędne do rzetelnej oceny wypowiedzi ucznia oraz jego odpowiedzi na pytania komisji egzaminacyjnej.
+które pozwolą pobrać fragmenty niezbędne do rzetelnej oceny wypowiedzi ucznia.
 
 Baza wiedzy zawiera:
-- szczegółowe kryteria oceniania matury ustnej (CKE)
-- streszczenia i opracowania lektur obowiązkowych
-- przykłady poprawnych i niepoprawnych wypowiedzi maturalnych
-- konteksty literackie, historyczne i kulturowe powiązane z typowymi zagadnieniami
+- kryteria oceniania matury ustnej (CKE)
+- lektury obowiązkowe
+- przykłady wypowiedzi maturalnych
+- konteksty literackie, historyczne i kulturowe
 
-#ZADANIE EGZAMINACYJNE 1
+#PYTANIE EGZAMINACYJNE
 <exam_question>
 {exam_question}
 </exam_question>
 
-#WYPOWIEDŹ UCZNIA DO ZADANIA 1
+#WYPOWIEDŹ UCZNIA
 <student_answer>
 {student_answer}
 </student_answer>
 
-#ZADANIE EGZAMINACYJNE 2
-Jeśli to pole jest puste, zignoruj je.
-<exam_question2>
-{exam_question2}
-</exam_question2>
-
-#WYPOWIEDŹ UCZNIA DO ZADANIA 2
-Jeśli to pole jest puste, zignoruj je.
-<student_answer2>
-{student_answer2}
-</student_answer2>
-
-#PRZEBIEG ROZMOWY Z KOMISJĄ (DIALOG)
-Poniższy zapis przedstawia pytania zadane przez komisję egzaminacyjną oraz odpowiedzi udzielone przez ucznia (jeśli te pola są puste, zignoruj je):
+#PRZEBIEG ROZMOWY Z KOMISJĄ
 <dialogue_transcript>
 Egzaminator: {examination_board_question1}
 Uczeń: {examination_board_question11_answer}
@@ -44,27 +31,14 @@ Uczeń: {examination_board_question12_answer}
 </dialogue_transcript>
 
 #INSTRUKCJA
-Wygeneruj od 4 do 6 zapytań semantycznych. Każde zapytanie powinno celować
-w inny rodzaj wiedzy potrzebnej do oceny:
-1. Jedno zapytanie o kryteria oceniania dla specyfiki tego zadania oraz rozmowy z komisją.
-2. Jedno lub dwa zapytania o lekturę/lektury wymienione w pytaniu, wypowiedzi lub rozmowie
-   (fabuła, bohaterowie, motywy, interpretacje).
-3. Jedno zapytanie o kontekst kulturowy/literacki/historyczny przywołany lub
-   wymagany przez zadanie lub poruszony w rozmowie.
-4. Jedno zapytanie o typowe błędy lub wzorcowe odpowiedzi dla tego typu zagadnienia.
-5. Opcjonalnie: zapytanie o drugi tekst kultury przywołany przez ucznia lub pojęcia z pytań komisji.
+Wygeneruj 4–6 zapytań semantycznych obejmujących:
+1. kryteria oceniania matury ustnej
+2. lektury / teksty kultury pojawiające się w wypowiedzi
+3. kontekst literacki / historyczny / kulturowy
+4. typowe błędy i wzorcowe odpowiedzi
+5. (opcjonalnie) pojęcia z rozmowy z komisją
 
-Zwróć WYŁĄCZNIE tablicę JSON zawierającą stringi — same zapytania, bez komentarzy,
-bez kluczy, bez Markdown.
-
-Przykład poprawnej odpowiedzi:
-[
-  "kryteria oceniania matura ustna język polski kryterium merytoryczne zadanie 1",
-  "Zbrodnia i kara Raskolnikow motyw winy i kary fabuła",
-  "kontekst egzystencjalizm wolność odpowiedzialność literatura",
-  "typowe błędy kardynalne matura ustna nieznajomość lektury",
-  "przykład dobrej argumentacji matura ustna omówienie motywu"
-]
+Zwróć WYŁĄCZNIE tablicę JSON stringów.
 """
 
 
