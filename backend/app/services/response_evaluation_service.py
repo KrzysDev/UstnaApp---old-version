@@ -14,9 +14,9 @@ class ResponseEvaluationService:
         question: str,
         response: str,
         examination_board_question1: str = "",
-        examination_board_question11_answer: str = "",
+        examination_board_question1_answer: str = "",
         examination_board_question2: str = "",
-        examination_board_question12_answer: str = "",
+        examination_board_question2_answer: str = "",
         question2: str = "",
         response2: str = ""
     ) -> str:
@@ -28,9 +28,9 @@ class ResponseEvaluationService:
                 exam_question2=question2,
                 student_answer2=response2,
                 examination_board_question1=examination_board_question1,
-                examination_board_question11_answer=examination_board_question11_answer,
+                examination_board_question11_answer=examination_board_question1_answer,
                 examination_board_question2=examination_board_question2,
-                examination_board_question12_answer=examination_board_question12_answer
+                examination_board_question12_answer=examination_board_question2_answer
             )
         )
         print("Retrieving documents...")
@@ -47,9 +47,9 @@ class ResponseEvaluationService:
                student_answer2=response2,
                filtered_chunks=documents,
                examination_board_question1=examination_board_question1,
-               examination_board_question11_answer=examination_board_question11_answer,
+               examination_board_question11_answer=examination_board_question1_answer,
                examination_board_question2=examination_board_question2,
-               examination_board_question12_answer=examination_board_question12_answer
+               examination_board_question12_answer=examination_board_question2_answer
            )
         )
 
@@ -61,9 +61,9 @@ class ResponseEvaluationService:
                 student_answer2=response2,
                 rag_context=reranked_retrival,
                 examination_board_question1=examination_board_question1,
-                examination_board_question11_answer=examination_board_question11_answer,
+                examination_board_question1_answer=examination_board_question1_answer,
                 examination_board_question2=examination_board_question2,
-                examination_board_question12_answer=examination_board_question12_answer
+                examination_board_question2_answer=examination_board_question2_answer
             )
         print("="*100)
         print(evaluation_prompt)

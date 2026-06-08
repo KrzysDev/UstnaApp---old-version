@@ -22,9 +22,9 @@ def evaluate_response(
             question=request.question1,
             response=request.response1,
             examination_board_question1=request.examination_board_question1,
-            examination_board_question11_answer=request.examination_board_question11_answer,
+            examination_board_question1_answer=request.examination_board_question1_answer,
             examination_board_question2=request.examination_board_question2,
-            examination_board_question12_answer=request.examination_board_question12_answer,
+            examination_board_question2_answer=request.examination_board_question2_answer,
             question2=request.question2,
             response2=request.response2
         )
