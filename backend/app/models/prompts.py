@@ -1,4 +1,3 @@
-
 RETRIEVAL_QUERY_GENERATION_PROMPT = """
 Jesteś asystentem systemu RAG wspierającego ocenianie matury ustnej z języka polskiego.
 
@@ -107,22 +106,17 @@ dobrze zorganizowanego bloku kontekstu dla egzaminatora-AI.
 {exam_question}
 </exam_question>
 
-#WYPOWIEDŹ UCZNIA DO ZADANIA 1
-<student_answer>
-{student_answer}
-</student_answer>
-
 #ZADANIE EGZAMINACYJNE 2
 Jeśli to pole jest puste, zignoruj je.
 <exam_question2>
 {exam_question2}
 </exam_question2>
 
-#WYPOWIEDŹ UCZNIA DO ZADANIA 2
-Jeśli to pole jest puste, zignoruj je.
-<student_answer2>
-{student_answer2}
-</student_answer2>
+#WYPOWIEDŹ UCZNIA
+Poniższa wypowiedź zawiera odpowiedź ucznia na jedno lub oba zadania egzaminacyjne.
+<student_answer>
+{student_answer}
+</student_answer>
 
 #PRZEBIEG ROZMOWY Z KOMISJĄ (DIALOG)
 Poniższy zapis przedstawia pytania zadane przez komisję egzaminacyjną oraz odpowiedzi udzielone przez ucznia (jeśli te pola są puste, zignoruj je):
