@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.routers.question_router import router as question_router
 from app.api.routers.response_evaluation_router import router as response_evaluation_router
+from app.api.routers.set_of_questions_router import router as set_of_questions_router
 
 app = FastAPI(
     title="UstnaApp API",
@@ -19,6 +20,7 @@ app.add_middleware(
 
 app.include_router(question_router, prefix="/api")
 app.include_router(response_evaluation_router, prefix="/api")
+app.include_router(set_of_questions_router, prefix="/api")
 
 @app.get("/")
 def read_root():
