@@ -224,25 +224,22 @@ uwzględnij to w ocenie jako błąd rzeczowy lub kardynalny.
 Poniżej znajduje się treść pierwszego zadania, które zostało zadane uczniowi:
 {exam_question}
 
-#WYPOWIEDŹ UCZNIA DO ZADANIA 1
-Poniżej znajduje się wypowiedź ucznia na pierwsze zadanie:
-{student_answer}
-
 #ZADANIE EGZAMINACYJNE 2
 Poniżej znajduje się treść drugiego zadania, które zostało zadane uczniowi (jeśli puste, zignoruj):
 {exam_question2}
 
-#WYPOWIEDŹ UCZNIA DO ZADANIA 2
-Poniżej znajduje się wypowiedź ucznia na drugie zadanie (jeśli puste, zignoruj):
-{student_answer2}
+#ODPOWIEDZ UCZNIA NA DWA ZADANE PYTANIA
+{student_answer}
 
 #PRZEBIEG ROZMOWY Z KOMISJĄ (DIALOG)
 Poniższy zapis przedstawia pytania zadane przez komisję egzaminacyjną oraz odpowiedzi udzielone przez ucznia. Stanowi on jedyną podstawę do oceny Kryterium 3 (Merytoryczny aspekt rozmowy) oraz wpływa na ogólną ocenę spójności, bogactwa językowego i poprawności (Kryterium 4). Jeśli poniższe pola (pytania i odpowiedzi) są puste, oznacza to, że część ustna z rozmową się nie odbyła i należy zignorować ten zapis, oceniając Kryterium 3 na 0/6 z adnotacją o braku rozmowy. Jeśli jednak pytania i odpowiedzi są wypełnione i obecne, musisz rzetelnie ocenić jakość odpowiedzi ucznia na pytania egzaminatorów i przyznać odpowiednią liczbę punktów (od 0 do 6 pkt).
-Egzaminator: {examination_board_question1}
-Uczeń: {examination_board_question11_answer}
+Pytanie egzaminatora nr 1:
+{examination_board_question1}
+Pytanie egzaminatora nr 2:
+{examination_board_question2}
 
-Egzaminator: {examination_board_question2}
-Uczeń: {examination_board_question12_answer}
+Odpowiedz ucznia:
+{examination_board_answer}
 
 #ODPOWIEDŹ JSON
 {{
