@@ -1,4 +1,3 @@
-
 from app.models.prompts import CONTEXT_SYNTHESIS_PROMPT
 from app.services.ai_service import AiService
 from app.services.vector_db_service import VectorDBService
@@ -14,63 +13,54 @@ class ResponseEvaluationService:
         question: str,
         response: str,
         examination_board_question1: str = "",
-        examination_board_question1_answer: str = "",
         examination_board_question2: str = "",
-        examination_board_question2_answer: str = "",
-        question2: str = "",
-        response2: str = ""
+        examination_board_answers: str = "",
+        question2: str = ""
     ) -> str:
+
         print("Generating retrieval queries...")
-        retrival_queries = self.ai_service.ask(
+
+        retrieval_queries = self.ai_service.ask(
             RETRIEVAL_QUERY_GENERATION_PROMPT.format(
                 exam_question=question,
-                student_answer=response,
                 exam_question2=question2,
-                student_answer2=response2,
+                student_answer=response,
                 examination_board_question1=examination_board_question1,
-                examination_board_question11_answer=examination_board_question1_answer,
                 examination_board_question2=examination_board_question2,
-                examination_board_question12_answer=examination_board_question2_answer
+                examination_board_questions_answer=examination_board_answers,
             )
         )
+
         print("Retrieving documents...")
+
         documents = self.vector_db_service.retrieve(
-            retrival_queries
+            retrieval_queries
         )
 
-        print("Reranking documents...")
-        reranked_retrival = self.ai_service.ask(
-           CONTEXT_SYNTHESIS_PROMPT.format(
-               exam_question=question,
-               student_answer=response,
-               exam_question2=question2,
-               student_answer2=response2,
-               filtered_chunks=documents,
-               examination_board_question1=examination_board_question1,
-               examination_board_question11_answer=examination_board_question1_answer,
-               examination_board_question2=examination_board_question2,
-               examination_board_question12_answer=examination_board_question2_answer
-           )
+        print("Reranking / synthesizing context...")
+
+        reranked_context = self.ai_service.ask(
+            CONTEXT_SYNTHESIS_PROMPT.format(
+                exam_question=question,
+                exam_question2=question2,
+                student_answer=response,
+                filtered_chunks=documents,
+                examination_board_question1=examination_board_question1,
+                examination_board_question2=examination_board_question2,
+                examination_board_questions_answer=examination_board_answers,
+            )
         )
 
         print("Evaluating...")
-        evaluation_prompt = EVALUATION_PROMPT.format(
-                exam_question=question,
-                student_answer=response,
-                exam_question2=question2,
-                student_answer2=response2,
-                rag_context=reranked_retrival,
-                examination_board_question1=examination_board_question1,
-                examination_board_question1_answer=examination_board_question1_answer,
-                examination_board_question2=examination_board_question2,
-                examination_board_question2_answer=examination_board_question2_answer
-            )
-        print("="*100)
-        print(evaluation_prompt)
-        print("="*100)
 
-        evaluation = self.ai_service.ask(
-            evaluation_prompt
+        evaluation_prompt = EVALUATION_PROMPT.format(
+            exam_question=question,
+            exam_question2=question2,
+            student_answer=response,
+            rag_context=reranked_context,
+            examination_board_question1=examination_board_question1,
+            examination_board_question2=examination_board_question2,
+            examination_board_answer=examination_board_answers,
         )
 
-        return evaluation
+        return self.ai_service.ask(evaluation_prompt)

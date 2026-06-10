@@ -1,25 +1,19 @@
-
 RETRIEVAL_QUERY_GENERATION_PROMPT = """
 Jesteś asystentem systemu RAG wspierającego ocenianie matury ustnej z języka polskiego.
 
 Twoim zadaniem jest wygenerowanie zestawu zapytań semantycznych do bazy wiedzy,
-które pozwolą pobrać fragmenty niezbędne do rzetelnej oceny wypowiedzi ucznia oraz jego odpowiedzi na pytania komisji egzaminacyjnej.
+które pozwolą pobrać fragmenty niezbędne do rzetelnej oceny wypowiedzi ucznia.
 
 Baza wiedzy zawiera:
-- szczegółowe kryteria oceniania matury ustnej (CKE)
-- streszczenia i opracowania lektur obowiązkowych
-- przykłady poprawnych i niepoprawnych wypowiedzi maturalnych
-- konteksty literackie, historyczne i kulturowe powiązane z typowymi zagadnieniami
+- kryteria oceniania matury ustnej (CKE)
+- lektury obowiązkowe
+- przykłady wypowiedzi maturalnych
+- konteksty literackie, historyczne i kulturowe
 
 #ZADANIE EGZAMINACYJNE 1
 <exam_question>
 {exam_question}
 </exam_question>
-
-#WYPOWIEDŹ UCZNIA DO ZADANIA 1
-<student_answer>
-{student_answer}
-</student_answer>
 
 #ZADANIE EGZAMINACYJNE 2
 Jeśli to pole jest puste, zignoruj je.
@@ -27,44 +21,29 @@ Jeśli to pole jest puste, zignoruj je.
 {exam_question2}
 </exam_question2>
 
-#WYPOWIEDŹ UCZNIA DO ZADANIA 2
-Jeśli to pole jest puste, zignoruj je.
-<student_answer2>
-{student_answer2}
-</student_answer2>
+#WYPOWIEDŹ UCZNIA
+Poniższa wypowiedź zawiera odpowiedź ucznia na jedno lub oba zadania egzaminacyjne.
+<student_answer>
+{student_answer}
+</student_answer>
 
-#PRZEBIEG ROZMOWY Z KOMISJĄ (DIALOG)
-Poniższy zapis przedstawia pytania zadane przez komisję egzaminacyjną oraz odpowiedzi udzielone przez ucznia (jeśli te pola są puste, zignoruj je):
+#PRZEBIEG ROZMOWY Z KOMISJĄ
 <dialogue_transcript>
 Egzaminator: {examination_board_question1}
-Uczeń: {examination_board_question11_answer}
-
 Egzaminator: {examination_board_question2}
-Uczeń: {examination_board_question12_answer}
+
+Uczeń: {examination_board_questions_answer}
 </dialogue_transcript>
 
 #INSTRUKCJA
-Wygeneruj od 4 do 6 zapytań semantycznych. Każde zapytanie powinno celować
-w inny rodzaj wiedzy potrzebnej do oceny:
-1. Jedno zapytanie o kryteria oceniania dla specyfiki tego zadania oraz rozmowy z komisją.
-2. Jedno lub dwa zapytania o lekturę/lektury wymienione w pytaniu, wypowiedzi lub rozmowie
-   (fabuła, bohaterowie, motywy, interpretacje).
-3. Jedno zapytanie o kontekst kulturowy/literacki/historyczny przywołany lub
-   wymagany przez zadanie lub poruszony w rozmowie.
-4. Jedno zapytanie o typowe błędy lub wzorcowe odpowiedzi dla tego typu zagadnienia.
-5. Opcjonalnie: zapytanie o drugi tekst kultury przywołany przez ucznia lub pojęcia z pytań komisji.
+Wygeneruj 4–6 zapytań semantycznych obejmujących:
+1. kryteria oceniania matury ustnej
+2. lektury / teksty kultury pojawiające się w wypowiedzi
+3. kontekst literacki / historyczny / kulturowy
+4. typowe błędy i wzorcowe odpowiedzi
+5. (opcjonalnie) pojęcia z rozmowy z komisją
 
-Zwróć WYŁĄCZNIE tablicę JSON zawierającą stringi — same zapytania, bez komentarzy,
-bez kluczy, bez Markdown.
-
-Przykład poprawnej odpowiedzi:
-[
-  "kryteria oceniania matura ustna język polski kryterium merytoryczne zadanie 1",
-  "Zbrodnia i kara Raskolnikow motyw winy i kary fabuła",
-  "kontekst egzystencjalizm wolność odpowiedzialność literatura",
-  "typowe błędy kardynalne matura ustna nieznajomość lektury",
-  "przykład dobrej argumentacji matura ustna omówienie motywu"
-]
+Zwróć WYŁĄCZNIE tablicę JSON stringów.
 """
 
 
@@ -106,18 +85,18 @@ Nie dodawaj nic poza tablicą JSON.
 
 Przykład:
 [
-  {
+  {{
     "id": "chunk_001",
     "relevance_score": 9,
     "keep": true,
     "reason": "Fragment zawiera dokładne zasady przyznawania punktów w kryterium 1. dla zadania 1."
-  },
-  {
+  }},
+  {{
     "id": "chunk_002",
     "relevance_score": 3,
     "keep": false,
     "reason": "Fragment dotyczy innej lektury niż wskazana w pytaniu."
-  }
+  }}
 ]
 """
 
@@ -133,31 +112,25 @@ dobrze zorganizowanego bloku kontekstu dla egzaminatora-AI.
 {exam_question}
 </exam_question>
 
-#WYPOWIEDŹ UCZNIA DO ZADANIA 1
-<student_answer>
-{student_answer}
-</student_answer>
-
 #ZADANIE EGZAMINACYJNE 2
 Jeśli to pole jest puste, zignoruj je.
 <exam_question2>
 {exam_question2}
 </exam_question2>
 
-#WYPOWIEDŹ UCZNIA DO ZADANIA 2
-Jeśli to pole jest puste, zignoruj je.
-<student_answer2>
-{student_answer2}
-</student_answer2>
+#WYPOWIEDŹ UCZNIA
+Poniższa wypowiedź zawiera odpowiedź ucznia na jedno lub oba zadania egzaminacyjne.
+<student_answer>
+{student_answer}
+</student_answer>
 
 #PRZEBIEG ROZMOWY Z KOMISJĄ (DIALOG)
 Poniższy zapis przedstawia pytania zadane przez komisję egzaminacyjną oraz odpowiedzi udzielone przez ucznia (jeśli te pola są puste, zignoruj je):
 <dialogue_transcript>
 Egzaminator: {examination_board_question1}
-Uczeń: {examination_board_question11_answer}
-
 Egzaminator: {examination_board_question2}
-Uczeń: {examination_board_question12_answer}
+
+Uczeń: {examination_board_questions_answer}
 </dialogue_transcript>
 
 #WYSELEKCJONOWANE FRAGMENTY
@@ -250,25 +223,22 @@ uwzględnij to w ocenie jako błąd rzeczowy lub kardynalny.
 Poniżej znajduje się treść pierwszego zadania, które zostało zadane uczniowi:
 {exam_question}
 
-#WYPOWIEDŹ UCZNIA DO ZADANIA 1
-Poniżej znajduje się wypowiedź ucznia na pierwsze zadanie:
-{student_answer}
-
 #ZADANIE EGZAMINACYJNE 2
 Poniżej znajduje się treść drugiego zadania, które zostało zadane uczniowi (jeśli puste, zignoruj):
 {exam_question2}
 
-#WYPOWIEDŹ UCZNIA DO ZADANIA 2
-Poniżej znajduje się wypowiedź ucznia na drugie zadanie (jeśli puste, zignoruj):
-{student_answer2}
+#ODPOWIEDZ UCZNIA NA DWA ZADANE PYTANIA
+{student_answer}
 
 #PRZEBIEG ROZMOWY Z KOMISJĄ (DIALOG)
 Poniższy zapis przedstawia pytania zadane przez komisję egzaminacyjną oraz odpowiedzi udzielone przez ucznia. Stanowi on jedyną podstawę do oceny Kryterium 3 (Merytoryczny aspekt rozmowy) oraz wpływa na ogólną ocenę spójności, bogactwa językowego i poprawności (Kryterium 4). Jeśli poniższe pola (pytania i odpowiedzi) są puste, oznacza to, że część ustna z rozmową się nie odbyła i należy zignorować ten zapis, oceniając Kryterium 3 na 0/6 z adnotacją o braku rozmowy. Jeśli jednak pytania i odpowiedzi są wypełnione i obecne, musisz rzetelnie ocenić jakość odpowiedzi ucznia na pytania egzaminatorów i przyznać odpowiednią liczbę punktów (od 0 do 6 pkt).
-Egzaminator: {examination_board_question1}
-Uczeń: {examination_board_question11_answer}
+Pytanie egzaminatora nr 1:
+{examination_board_question1}
+Pytanie egzaminatora nr 2:
+{examination_board_question2}
 
-Egzaminator: {examination_board_question2}
-Uczeń: {examination_board_question12_answer}
+Odpowiedz ucznia:
+{examination_board_answer}
 
 #ODPOWIEDŹ JSON
 {{
@@ -388,4 +358,61 @@ UWAGA — lista zawiera elementy WYŁĄCZNIE w takim formacie:
         }}
     ]
 }}
+"""
+
+EXAMINATION_BOARD_QUESTIONS_PROMPT = """
+Jesteś członkiem komisji egzaminacyjnej na ustnej maturze z języka polskiego.
+
+Uczeń wygłosił JEDNĄ spójną wypowiedź, która odnosi się do dwóch tematów.
+
+## KONTEKST:
+
+### TEMAT 1:
+\"\"\"{topic_1}\"\"\"
+
+### TEMAT 2:
+\"\"\"{topic_2}\"\"\"
+
+---
+
+### WYPŁOWIEDŹ UCZNIA:
+\"\"\"{student_answer}\"\"\"
+
+## ZADANIE:
+Wygeneruj dokładnie 2 pytania komisji egzaminacyjnej:
+
+- Pytanie 1 → dotyczy części wypowiedzi odnoszącej się do TEMATU 1
+- Pytanie 2 → dotyczy części wypowiedzi odnoszącej się do TEMATU 2
+
+Uczeń mówił jedną wypowiedź, więc:
+- NIE traktuj tego jako dwóch osobnych odpowiedzi
+- tylko jako jedną wypowiedź z dwoma wątkami
+
+## WYMAGANIA PYTAŃ:
+Każde pytanie powinno:
+- odnosić się do konkretnego fragmentu wypowiedzi
+- sprawdzać rozumienie, interpretację lub argumentację
+- pogłębiać myśl ucznia (uzasadnienie, doprecyzowanie, rozwinięcie)
+- brzmieć jak realne pytanie komisji maturalnej
+- być konkretne i osadzone w treści wypowiedzi
+- nie być ogólnikowe
+- nie powtarzać się
+
+## STYL:
+- formalny, egzaminacyjny
+- neutralny
+- naturalny dla komisji
+- precyzyjny
+
+## FORMAT ODPOWIEDZI (BARDZO WAŻNE):
+Zwróć WYŁĄCZNIE JSON:
+
+{{
+  "questions": [
+    "pytanie do tematu 1",
+    "pytanie do tematu 2"
+  ]
+}}
+
+Nie dodawaj żadnego komentarza, wstępu ani wyjaśnień.
 """
