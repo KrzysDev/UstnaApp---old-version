@@ -3,18 +3,24 @@
 from pydantic import BaseModel
 from typing import Literal
 from fastapi import File
+import speech_recognition as sr
 
 
 class EvaluationRequest(BaseModel):
-    examination_board_question1: str
-    examination_board_question11_answer: str
-    examination_board_question2: str
-    examination_board_question12_answer: str
     question1: str
-    response1: str
     question2: str
-    response2: str
 
+    response: str
+
+    examination_board_question1: str
+    examination_board_question2: str
+
+    examination_board_answers: str
+
+class ExaminationBoardQuestionsRequest(BaseModel):
+    topic_1: str
+    topic_2: str
+    student_answer: str
 
 from pydantic import BaseModel
 from typing import Literal, Optional
