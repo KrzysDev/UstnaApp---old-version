@@ -23,10 +23,7 @@ class DashboardScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Adres URL backendu FastAPI:',
-                style: GoogleFonts.outfit(color: const Color(0xFF8B95A5), fontSize: 13),
-              ),
+              Text('Adres URL backendu FastAPI:', style: GoogleFonts.outfit(color: const Color(0xFF8B95A5), fontSize: 13)),
               const SizedBox(height: 10),
               TextField(
                 controller: controller,
@@ -60,17 +57,11 @@ class DashboardScreen extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     backgroundColor: const Color(0xFF1E232A),
-                    content: Text(
-                      'Zaktualizowano URL API na: ${controller.text}',
-                      style: GoogleFonts.outfit(color: const Color(0xFFC5A880)),
-                    ),
+                    content: Text('Zaktualizowano URL API na: ${controller.text}', style: GoogleFonts.outfit(color: const Color(0xFFC5A880))),
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFC5A880),
-                foregroundColor: const Color(0xFF1E232A),
-              ),
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFC5A880), foregroundColor: const Color(0xFF1E232A)),
               child: const Text('Zapisz'),
             ),
           ],
@@ -82,7 +73,7 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final examProvider = Provider.of<ExamProvider>(context);
-    
+
     return Scaffold(
       backgroundColor: const Color(0xFF0C0E12),
       appBar: AppBar(
@@ -101,7 +92,7 @@ class DashboardScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          // Background soft glows
+          // Background soft glow
           Positioned(
             bottom: -50,
             left: -50,
@@ -110,13 +101,7 @@ class DashboardScreen extends StatelessWidget {
               height: 250,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFFC5A880).withOpacity(0.04),
-                    blurRadius: 100,
-                    spreadRadius: 50,
-                  ),
-                ],
+                boxShadow: [BoxShadow(color: const Color(0xFFC5A880).withOpacity(0.04), blurRadius: 100, spreadRadius: 50)],
               ),
             ),
           ),
@@ -126,90 +111,10 @@ class DashboardScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Welcome user section
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 28,
-                      backgroundColor: const Color(0xFF1E232A),
-                      child: Text(
-                        'JA',
-                        style: GoogleFonts.outfit(
-                          color: const Color(0xFFC5A880),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Witaj, Jan!',
-                          style: GoogleFonts.outfit(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          'Przygotowania do matury idą świetnie',
-                          style: GoogleFonts.outfit(
-                            fontSize: 14,
-                            color: const Color(0xFF8B95A5),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 32),
-
-                // Stats Panel
-                Text(
-                  'Twoje Statystyki',
-                  style: GoogleFonts.outfit(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white70,
-                    letterSpacing: 0.8,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildStatCard(
-                        context,
-                        '5',
-                        'Ukończone próby',
-                        Icons.history_edu_rounded,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _buildStatCard(
-                        context,
-                        '74%',
-                        'Średni wynik',
-                        Icons.auto_graph_rounded,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 40),
-
-                // Call to actions
+                // Section header
                 Text(
                   'Rozpocznij Naukę',
-                  style: GoogleFonts.outfit(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white70,
-                    letterSpacing: 0.8,
-                  ),
+                  style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white70, letterSpacing: 0.8),
                 ),
                 const SizedBox(height: 12),
 
@@ -217,30 +122,15 @@ class DashboardScreen extends StatelessWidget {
                 GestureDetector(
                   onTap: () async {
                     examProvider.resetExam();
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const ExamPreparationScreen()),
-                    );
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ExamPreparationScreen()));
                     await examProvider.drawSetOfQuestions();
                   },
                   child: Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xFFDCC19A),
-                          Color(0xFFC5A880),
-                        ],
-                      ),
+                      gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFFDCC19A), Color(0xFFC5A880)]),
                       borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFFC5A880).withOpacity(0.2),
-                          blurRadius: 15,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
+                      boxShadow: [BoxShadow(color: const Color(0xFFC5A880).withOpacity(0.2), blurRadius: 15, offset: const Offset(0, 8))],
                     ),
                     child: Row(
                       children: [
@@ -250,36 +140,18 @@ class DashboardScreen extends StatelessWidget {
                             children: [
                               Text(
                                 'Symulacja Egzaminu',
-                                style: GoogleFonts.outfit(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF12161A),
-                                ),
+                                style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.bold, color: const Color(0xFF12161A)),
                               ),
                               const SizedBox(height: 8),
-                              Text(
-                                'Wylosuj pytania (jawne + niejawne z obrazem/wierszem), zaprezentuj wypowiedź i porozmawiaj z komisją.',
-                                style: GoogleFonts.outfit(
-                                  fontSize: 13,
-                                  color: const Color(0xFF12161A).withOpacity(0.8),
-                                  height: 1.4,
-                                ),
-                              ),
+                              Text('Wylosuj pytania (jawne + niejawne z obrazem/wierszem), zaprezentuj wypowiedź i porozmawiaj z komisją.', style: GoogleFonts.outfit(fontSize: 13, color: const Color(0xFF12161A).withOpacity(0.8), height: 1.4)),
                             ],
                           ),
                         ),
                         const SizedBox(width: 16),
                         Container(
                           padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF12161A).withOpacity(0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.play_arrow_rounded,
-                            size: 36,
-                            color: Color(0xFF12161A),
-                          ),
+                          decoration: BoxDecoration(color: const Color(0xFF12161A).withOpacity(0.1), shape: BoxShape.circle),
+                          child: const Icon(Icons.play_arrow_rounded, size: 36, color: Color(0xFF12161A)),
                         ),
                       ],
                     ),
@@ -290,18 +162,14 @@ class DashboardScreen extends StatelessWidget {
                 // 2. Browse Public Questions Button (Secondary)
                 GestureDetector(
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const QuestionsListScreen()),
-                    );
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const QuestionsListScreen()));
                   },
                   child: Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: const Color(0xFF1E232A),
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: Colors.white.withOpacity(0.05),
-                      ),
+                      border: Border.all(color: Colors.white.withOpacity(0.05)),
                     ),
                     child: Row(
                       children: [
@@ -311,36 +179,18 @@ class DashboardScreen extends StatelessWidget {
                             children: [
                               Text(
                                 'Lista Pytań Jawnych',
-                                style: GoogleFonts.outfit(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
+                                style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
                               ),
                               const SizedBox(height: 8),
-                              Text(
-                                'Przejrzyj listę pytań jawnych CKE opublikowanych na rok 2026 i przećwicz ich tematykę.',
-                                style: GoogleFonts.outfit(
-                                  fontSize: 13,
-                                  color: const Color(0xFF8B95A5),
-                                  height: 1.4,
-                                ),
-                              ),
+                              Text('Przejrzyj listę pytań jawnych CKE opublikowanych na rok 2026 i przećwicz ich tematykę.', style: GoogleFonts.outfit(fontSize: 13, color: const Color(0xFF8B95A5), height: 1.4)),
                             ],
                           ),
                         ),
                         const SizedBox(width: 16),
                         Container(
                           padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.05),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.format_list_bulleted_rounded,
-                            size: 28,
-                            color: Color(0xFFC5A880),
-                          ),
+                          decoration: BoxDecoration(color: Colors.white.withOpacity(0.05), shape: BoxShape.circle),
+                          child: const Icon(Icons.format_list_bulleted_rounded, size: 28, color: Color(0xFFC5A880)),
                         ),
                       ],
                     ),
@@ -348,46 +198,6 @@ class DashboardScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 40),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatCard(BuildContext context, String value, String label, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E232A),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.05),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                value,
-                style: GoogleFonts.outfit(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFFC5A880),
-                ),
-              ),
-              Icon(icon, color: const Color(0xFF8B95A5).withOpacity(0.5), size: 24),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: GoogleFonts.outfit(
-              fontSize: 13,
-              color: const Color(0xFF8B95A5),
             ),
           ),
         ],

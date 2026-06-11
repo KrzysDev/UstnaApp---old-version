@@ -10,24 +10,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool _isLoggingIn = false;
-
-  void _handleGoogleLogin() {
-    setState(() {
-      _isLoggingIn = true;
-    });
-
-    // Simulate network authentication delay
-    Future.delayed(const Duration(milliseconds: 1200), () {
-      if (mounted) {
-        setState(() {
-          _isLoggingIn = false;
-        });
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const DashboardScreen()),
-        );
-      }
-    });
+  void _handleStart() {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const DashboardScreen()));
   }
 
   @override
@@ -38,17 +22,10 @@ class _LoginScreenState extends State<LoginScreen> {
           // Background Gradient
           Container(
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFF161A22),
-                  Color(0xFF0C0E12),
-                ],
-              ),
+              gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFF161A22), Color(0xFF0C0E12)]),
             ),
           ),
-          
+
           // Subtle Gold Glow in Background
           Positioned(
             top: -100,
@@ -58,13 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFFC5A880).withOpacity(0.08),
-                    blurRadius: 100,
-                    spreadRadius: 50,
-                  ),
-                ],
+                boxShadow: [BoxShadow(color: const Color(0xFFC5A880).withOpacity(0.08), blurRadius: 100, spreadRadius: 50)],
               ),
             ),
           ),
@@ -78,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 20),
-                    
+
                     // Logo Icon Container
                     Center(
                       child: Container(
@@ -86,23 +57,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         decoration: BoxDecoration(
                           color: const Color(0xFF1E232A),
                           borderRadius: BorderRadius.circular(28),
-                          border: Border.all(
-                            color: const Color(0xFFC5A880).withOpacity(0.2),
-                            width: 1.5,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFFC5A880).withOpacity(0.05),
-                              blurRadius: 20,
-                              spreadRadius: 2,
-                            ),
-                          ],
+                          border: Border.all(color: const Color(0xFFC5A880).withOpacity(0.2), width: 1.5),
+                          boxShadow: [BoxShadow(color: const Color(0xFFC5A880).withOpacity(0.05), blurRadius: 20, spreadRadius: 2)],
                         ),
-                        child: const Icon(
-                          Icons.menu_book_rounded,
-                          size: 72,
-                          color: Color(0xFFC5A880),
-                        ),
+                        child: const Icon(Icons.menu_book_rounded, size: 72, color: Color(0xFFC5A880)),
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -111,12 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text(
                       'UstnaApp',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.outfit(
-                        fontSize: 38,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 1.5,
-                      ),
+                      style: GoogleFonts.outfit(fontSize: 38, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.5),
                     ),
                     const SizedBox(height: 8),
 
@@ -124,11 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text(
                       'Twój asystent maturalny',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.outfit(
-                        fontSize: 16,
-                        color: const Color(0xFF8B95A5),
-                        fontWeight: FontWeight.w400,
-                      ),
+                      style: GoogleFonts.outfit(fontSize: 16, color: const Color(0xFF8B95A5), fontWeight: FontWeight.w400),
                     ),
                     const SizedBox(height: 48),
 
@@ -138,75 +87,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: BoxDecoration(
                         color: const Color(0xFF1E232A).withOpacity(0.7),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.05),
-                        ),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
                       ),
                       child: Column(
                         children: [
-                          _buildFeatureRow(
-                            context,
-                            Icons.check_circle_outline_rounded,
-                            'Baza pytań jawnych',
-                            'Przeglądaj oficjalne pytania CKE z języka polskiego.',
-                          ),
+                          _buildFeatureRow(context, Icons.check_circle_outline_rounded, 'Baza pytań jawnych', 'Przeglądaj oficjalne pytania CKE z języka polskiego.'),
                           const Divider(height: 24, color: Colors.white10),
-                          _buildFeatureRow(
-                            context,
-                            Icons.record_voice_over_rounded,
-                            'Symulacja egzaminu ustnego',
-                            'Wylosuj zestaw, odpowiedz do mikrofonu i poczuj atmosferę matury.',
-                          ),
+                          _buildFeatureRow(context, Icons.record_voice_over_rounded, 'Symulacja egzaminu ustnego', 'Wylosuj zestaw, odpowiedz do mikrofonu i poczuj atmosferę matury.'),
                           const Divider(height: 24, color: Colors.white10),
-                          _buildFeatureRow(
-                            context,
-                            Icons.auto_awesome_rounded,
-                            'Ocena przez sztuczną inteligencję',
-                            'Otrzymaj pełny raport z punktacją per kryterium i wykazem błędów.',
-                          ),
+                          _buildFeatureRow(context, Icons.auto_awesome_rounded, 'Ocena przez sztuczną inteligencję', 'Otrzymaj pełny raport z punktacją per kryterium i wykazem błędów.'),
                         ],
                       ),
                     ),
                     const SizedBox(height: 48),
 
-                    // Google Login Button
-                    _isLoggingIn
-                        ? const Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFC5A880)),
-                            ),
-                          )
-                        : ElevatedButton(
-                            onPressed: _handleGoogleLogin,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: const Color(0xFF1E232A),
-                              elevation: 2,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // Mock Google Icon using image or icons
-                                const Icon(
-                                  Icons.login_rounded,
-                                  color: Color(0xFF1E232A),
-                                  size: 22,
-                                ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  'Zaloguj się przez Google',
-                                  style: GoogleFonts.outfit(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                    // Start Button
+                    ElevatedButton(
+                      onPressed: _handleStart,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFC5A880),
+                        foregroundColor: const Color(0xFF1E232A),
+                        elevation: 2,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      ),
+                      child: Text('Rozpocznij', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w600)),
+                    ),
                     const SizedBox(height: 24),
                   ],
                 ),
@@ -230,20 +136,10 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               Text(
                 title,
-                style: GoogleFonts.outfit(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
+                style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
               ),
               const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: GoogleFonts.outfit(
-                  fontSize: 13,
-                  color: const Color(0xFF8B95A5),
-                ),
-              ),
+              Text(subtitle, style: GoogleFonts.outfit(fontSize: 13, color: const Color(0xFF8B95A5))),
             ],
           ),
         ),

@@ -173,11 +173,11 @@ class ExamProvider with ChangeNotifier {
     try {
       final path = await _audioService.stopRecording();
       _isRecordingMonologue = false;
-      
+
       if (path != null) {
         _isTranscribingMonologue = true;
         notifyListeners();
-        
+
         final text = await _apiService.transcribeAudio(path);
         _monologueTranscript = text.isNotEmpty ? text : 'Brak transkrypcji (brak wykrytej mowy).';
       } else {
@@ -206,11 +206,7 @@ class ExamProvider with ChangeNotifier {
     try {
       if (_examSet == null) throw Exception('Brak aktywnego zestawu egzaminacyjnego.');
 
-      final questions = await _apiService.getBoardQuestions(
-        topic1: _examSet!.question1.question,
-        topic2: _examSet!.question2.question,
-        studentAnswer: _monologueTranscript,
-      );
+      final questions = await _apiService.getBoardQuestions(topic1: _examSet!.question1.question, topic2: _examSet!.question2.question, studentAnswer: _monologueTranscript);
 
       _boardQuestions = questions;
       _currentBoardQuestionIndex = 0;
@@ -218,10 +214,7 @@ class ExamProvider with ChangeNotifier {
     } catch (e) {
       _errorMessage = 'Nie udało się wygenerować pytań komisji: $e';
       // Fallback standard questions in case LLM fails or returns empty
-      _boardQuestions = [
-        'Proszę rozwinąć wątek dotyczący lektury z zadania 1. w kontekście postawy bohatera.',
-        'W jaki sposób załączone dzieło z zadania 2. odnosi się do współczesnych realiów?'
-      ];
+      _boardQuestions = ['Proszę rozwinąć wątek dotyczący lektury z zadania 1. w kontekście postawy bohatera.', 'W jaki sposób załączone dzieło z zadania 2. odnosi się do współczesnych realiów?'];
     } finally {
       _isGeneratingBoardQuestions = false;
       notifyListeners();
@@ -251,15 +244,13 @@ class ExamProvider with ChangeNotifier {
         notifyListeners();
 
         final text = await _apiService.transcribeAudio(path);
-        _boardAnswers[_currentBoardQuestionIndex] = 
-            text.isNotEmpty ? text : 'Brak transkrypcji (brak wykrytej mowy).';
+        _boardAnswers[_currentBoardQuestionIndex] = text.isNotEmpty ? text : 'Brak transkrypcji (brak wykrytej mowy).';
       } else {
         _errorMessage = 'Nie udało się odnaleźć pliku z nagraniem.';
       }
     } catch (e) {
       _errorMessage = 'Błąd transkrypcji odpowiedzi: $e';
-      _boardAnswers[_currentBoardQuestionIndex] = 
-          'Błąd transkrypcji. Wpisz swoją odpowiedź tutaj ręcznie.';
+      _boardAnswers[_currentBoardQuestionIndex] = 'Błąd transkrypcji. Wpisz swoją odpowiedź tutaj ręcznie.';
     } finally {
       _isTranscribingBoardAnswer = false;
       notifyListeners();
@@ -289,17 +280,9 @@ class ExamProvider with ChangeNotifier {
       if (_boardQuestions.length < 2) throw Exception('Brak pytań komisji.');
 
       // Combine board answers into one string as expected by the backend EvaluationRequest
-      final combinedBoardAnswers = 
-          'Odpowiedź na Pytanie 1: ${_boardAnswers[0]}\n\nOdpowiedź na Pytanie 2: ${_boardAnswers[1]}';
+      final combinedBoardAnswers = 'Odpowiedź na Pytanie 1: ${_boardAnswers[0]}\n\nOdpowiedź na Pytanie 2: ${_boardAnswers[1]}';
 
-      final result = await _apiService.evaluateResponse(
-        question1: _examSet!.question1.question,
-        question2: _examSet!.question2.question,
-        responseText: _monologueTranscript,
-        examinationBoardQuestion1: _boardQuestions[0],
-        examinationBoardQuestion2: _boardQuestions[1],
-        examinationBoardAnswers: combinedBoardAnswers,
-      );
+      final result = await _apiService.evaluateResponse(question1: _examSet!.question1.question, question2: _examSet!.question2.question, responseText: _monologueTranscript, examinationBoardQuestion1: _boardQuestions[0], examinationBoardQuestion2: _boardQuestions[1], examinationBoardAnswers: combinedBoardAnswers);
 
       _evaluationResult = result;
     } catch (e) {
