@@ -7,4 +7,4 @@ transcribing_service = TranscribingService()
 
 @router.post("/")
 async def transcribe_audio(file: UploadFile = File(...)):
-    return transcribing_service.transcribe(transcribing_service, file)
+    return await transcribing_service.transcribe(file)
