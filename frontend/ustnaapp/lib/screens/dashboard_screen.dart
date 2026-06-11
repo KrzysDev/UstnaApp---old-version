@@ -35,7 +35,7 @@ class DashboardScreen extends StatelessWidget {
                   hintStyle: const TextStyle(color: Colors.white30),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+                    borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -48,7 +48,7 @@ class DashboardScreen extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
-              child: Text('Anuluj', style: TextStyle(color: Colors.white.withOpacity(0.6))),
+              child: Text('Anuluj', style: TextStyle(color: Colors.white.withValues(alpha: 0.6))),
             ),
             ElevatedButton(
               onPressed: () {
@@ -169,7 +169,7 @@ class DashboardScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: const Color(0xFF1E232A),
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
                     ),
                     child: Row(
                       children: [
@@ -189,7 +189,7 @@ class DashboardScreen extends StatelessWidget {
                         const SizedBox(width: 16),
                         Container(
                           padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(color: Colors.white.withOpacity(0.05), shape: BoxShape.circle),
+                          decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.05), shape: BoxShape.circle),
                           child: const Icon(Icons.format_list_bulleted_rounded, size: 28, color: Color(0xFFC5A880)),
                         ),
                       ],

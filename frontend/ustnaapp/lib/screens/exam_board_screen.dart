@@ -22,10 +22,7 @@ class _ExamBoardScreenState extends State<ExamBoardScreen> with SingleTickerProv
   void initState() {
     super.initState();
     _answerController = TextEditingController();
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    );
+    _pulseController = AnimationController(vsync: this, duration: const Duration(seconds: 1));
   }
 
   @override
@@ -90,9 +87,7 @@ class _ExamBoardScreenState extends State<ExamBoardScreen> with SingleTickerProv
       _answerController.text = provider.boardAnswers[1];
     } else {
       // Proceed to evaluation report
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const ExamReportScreen()),
-      );
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ExamReportScreen()));
       await provider.submitForEvaluation();
     }
   }
@@ -102,14 +97,12 @@ class _ExamBoardScreenState extends State<ExamBoardScreen> with SingleTickerProv
     final provider = Provider.of<ExamProvider>(context);
     final qIndex = provider.currentBoardQuestionIndex;
     final questions = provider.boardQuestions;
-    
+
     // Safety check in case questions are empty
     if (questions.isEmpty) {
       return const Scaffold(
         backgroundColor: Color(0xFF0C0E12),
-        body: Center(
-          child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFC5A880))),
-        ),
+        body: Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFC5A880)))),
       );
     }
 
@@ -148,35 +141,24 @@ class _ExamBoardScreenState extends State<ExamBoardScreen> with SingleTickerProv
                     Expanded(
                       child: Container(
                         height: 4,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFC5A880),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+                        decoration: BoxDecoration(color: const Color(0xFFC5A880), borderRadius: BorderRadius.circular(2)),
                       ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Container(
                         height: 4,
-                        decoration: BoxDecoration(
-                          color: qIndex == 1 ? const Color(0xFFC5A880) : Colors.white12,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+                        decoration: BoxDecoration(color: qIndex == 1 ? const Color(0xFFC5A880) : Colors.white12, borderRadius: BorderRadius.circular(2)),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Question Header Tag
                 Text(
                   'KOMISJA EGZAMINACYJNA • PYTANIE ${qIndex + 1} Z 2',
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFFC5A880),
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5,
-                  ),
+                  style: GoogleFonts.outfit(color: const Color(0xFFC5A880), fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5),
                 ),
                 const SizedBox(height: 16),
 
@@ -186,18 +168,11 @@ class _ExamBoardScreenState extends State<ExamBoardScreen> with SingleTickerProv
                   decoration: BoxDecoration(
                     color: const Color(0xFF1E232A),
                     borderRadius: BorderRadius.circular(24),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.04),
-                    ),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.04)),
                   ),
                   child: Text(
                     currentQuestionText,
-                    style: GoogleFonts.outfit(
-                      color: Colors.white,
-                      fontSize: 17,
-                      height: 1.5,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: GoogleFonts.outfit(color: Colors.white, fontSize: 17, height: 1.5, fontWeight: FontWeight.bold),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -231,33 +206,15 @@ class _ExamBoardScreenState extends State<ExamBoardScreen> with SingleTickerProv
                                 height: 100,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: provider.isRecordingBoardAnswer
-                                      ? Colors.redAccent.withOpacity(0.1 + (_pulseController.value * 0.15))
-                                      : const Color(0xFFC5A880).withOpacity(0.05),
-                                  border: Border.all(
-                                    color: provider.isRecordingBoardAnswer
-                                        ? Colors.redAccent.withOpacity(0.5 + (_pulseController.value * 0.5))
-                                        : const Color(0xFFC5A880).withOpacity(0.3),
-                                    width: 3.5,
-                                  ),
+                                  color: provider.isRecordingBoardAnswer ? Colors.redAccent.withOpacity(0.1 + (_pulseController.value * 0.15)) : const Color(0xFFC5A880).withOpacity(0.05),
+                                  border: Border.all(color: provider.isRecordingBoardAnswer ? Colors.redAccent.withOpacity(0.5 + (_pulseController.value * 0.5)) : const Color(0xFFC5A880).withOpacity(0.3), width: 3.5),
                                 ),
                                 child: Center(
                                   child: Container(
                                     width: 70,
                                     height: 70,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: provider.isRecordingBoardAnswer
-                                          ? Colors.redAccent
-                                          : const Color(0xFFC5A880),
-                                    ),
-                                    child: Icon(
-                                      provider.isRecordingBoardAnswer
-                                          ? Icons.stop_rounded
-                                          : Icons.mic_rounded,
-                                      color: const Color(0xFF1E232A),
-                                      size: 32,
-                                    ),
+                                    decoration: BoxDecoration(shape: BoxShape.circle, color: provider.isRecordingBoardAnswer ? Colors.redAccent : const Color(0xFFC5A880)),
+                                    child: Icon(provider.isRecordingBoardAnswer ? Icons.stop_rounded : Icons.mic_rounded, color: const Color(0xFF1E232A), size: 32),
                                   ),
                                 ),
                               );
@@ -265,21 +222,15 @@ class _ExamBoardScreenState extends State<ExamBoardScreen> with SingleTickerProv
                           ),
                         ),
                         const SizedBox(height: 16),
-                        
+
                         // Board recording timer
                         if (provider.isRecordingBoardAnswer)
                           Text(
                             _formatRecordTime(_recordSeconds),
-                            style: GoogleFonts.outfit(
-                              color: Colors.redAccent,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: GoogleFonts.outfit(color: Colors.redAccent, fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                       ] else if (provider.isTranscribingBoardAnswer) ...[
-                        const CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFC5A880)),
-                        ),
+                        const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFC5A880))),
                         const SizedBox(height: 20),
                         Text(
                           'Trwa transkrypcja odpowiedzi...',
@@ -296,11 +247,7 @@ class _ExamBoardScreenState extends State<ExamBoardScreen> with SingleTickerProv
                                 children: [
                                   Text(
                                     'Transkrypcja Twojej odpowiedzi:',
-                                    style: GoogleFonts.outfit(
-                                      color: const Color(0xFF8B95A5),
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                    style: GoogleFonts.outfit(color: const Color(0xFF8B95A5), fontSize: 13, fontWeight: FontWeight.w500),
                                   ),
                                   TextButton.icon(
                                     onPressed: () => _handleRecording(provider),
@@ -325,10 +272,7 @@ class _ExamBoardScreenState extends State<ExamBoardScreen> with SingleTickerProv
                                     filled: true,
                                     fillColor: const Color(0xFF1E232A),
                                     contentPadding: const EdgeInsets.all(18),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                      borderSide: BorderSide.none,
-                                    ),
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20), borderSide: BorderSide.none),
                                     focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(20),
                                       borderSide: const BorderSide(color: Color(0xFFC5A880), width: 1.5),
@@ -363,23 +307,15 @@ class _ExamBoardScreenState extends State<ExamBoardScreen> with SingleTickerProv
                       backgroundColor: const Color(0xFFC5A880),
                       foregroundColor: const Color(0xFF1E232A),
                       minimumSize: const Size.fromHeight(56),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       elevation: 4,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          qIndex == 0 ? 'Następne pytanie' : 'Przejdź do oceny egzaminu',
-                          style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
+                        Text(qIndex == 0 ? 'Następne pytanie' : 'Przejdź do oceny egzaminu', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold)),
                         const SizedBox(width: 8),
-                        Icon(
-                          qIndex == 0 ? Icons.arrow_forward_rounded : Icons.auto_awesome_rounded,
-                          size: 20,
-                        ),
+                        Icon(qIndex == 0 ? Icons.arrow_forward_rounded : Icons.auto_awesome_rounded, size: 20),
                       ],
                     ),
                   ),

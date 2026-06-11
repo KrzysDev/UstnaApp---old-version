@@ -46,9 +46,7 @@ class _QuestionsListScreenState extends State<QuestionsListScreen> {
         }
       } else {
         // Search by substring
-        _filteredQuestions = _allQuestions
-            .where((q) => q.toLowerCase().contains(lowerQuery))
-            .toList();
+        _filteredQuestions = _allQuestions.where((q) => q.toLowerCase().contains(lowerQuery)).toList();
       }
     });
   }
@@ -57,9 +55,7 @@ class _QuestionsListScreenState extends State<QuestionsListScreen> {
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xFF1E232A),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
       isScrollControlled: true,
       builder: (ctx) {
         return DraggableScrollableSheet(
@@ -77,31 +73,21 @@ class _QuestionsListScreenState extends State<QuestionsListScreen> {
                     child: Container(
                       width: 40,
                       height: 5,
-                      decoration: BoxDecoration(
-                        color: Colors.white24,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                      decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(10)),
                     ),
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // Question Tag
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFC5A880).withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+                        decoration: BoxDecoration(color: const Color(0xFFC5A880).withOpacity(0.15), borderRadius: BorderRadius.circular(30)),
                         child: Text(
                           'Pytanie Jawne #${indexInAll + 1}',
-                          style: GoogleFonts.outfit(
-                            color: const Color(0xFFC5A880),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
+                          style: GoogleFonts.outfit(color: const Color(0xFFC5A880), fontWeight: FontWeight.bold, fontSize: 14),
                         ),
                       ),
                       IconButton(
@@ -115,12 +101,7 @@ class _QuestionsListScreenState extends State<QuestionsListScreen> {
                   // Full Question Text
                   Text(
                     questionText,
-                    style: GoogleFonts.outfit(
-                      fontSize: 18,
-                      color: Colors.white,
-                      height: 1.6,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: GoogleFonts.outfit(fontSize: 18, color: Colors.white, height: 1.6, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 32),
                   const Divider(color: Colors.white10),
@@ -129,28 +110,15 @@ class _QuestionsListScreenState extends State<QuestionsListScreen> {
                   // Guidelines / Tips header
                   Text(
                     'Wskazówki Egzaminacyjne',
-                    style: GoogleFonts.outfit(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFFC5A880),
-                    ),
+                    style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFFC5A880)),
                   ),
                   const SizedBox(height: 12),
-                  
-                  _buildTipRow(
-                    'Lektura obowiązkowa', 
-                    'Omów zagadnienie na podstawie wskazanej w pytaniu lektury obowiązkowej. Musisz wykazać się dobrą znajomością fabuły i bohaterów (uwaga na błędy kardynalne!).'
-                  ),
+
+                  _buildTipRow('Lektura obowiązkowa', 'Omów zagadnienie na podstawie wskazanej w pytaniu lektury obowiązkowej. Musisz wykazać się dobrą znajomością fabuły i bohaterów (uwaga na błędy kardynalne!).'),
                   const SizedBox(height: 12),
-                  _buildTipRow(
-                    'Przywołanie kontekstu', 
-                    'Zadbaj o właściwy kontekst (np. historycznoliteracki, biograficzny, filozoficzny lub kulturowy) i wyraźnie połącz go z głównym tematem wypowiedzi.'
-                  ),
+                  _buildTipRow('Przywołanie kontekstu', 'Zadbaj o właściwy kontekst (np. historycznoliteracki, biograficzny, filozoficzny lub kulturowy) i wyraźnie połącz go z głównym tematem wypowiedzi.'),
                   const SizedBox(height: 12),
-                  _buildTipRow(
-                    'Struktura wypowiedzi', 
-                    'Zorganizuj prezentację logicznie: sformułuj wstęp (z tezą/hipotezą), rozwiń argumenty i podsumuj wypowiedź trafnymi wnioskami.'
-                  ),
+                  _buildTipRow('Struktura wypowiedzi', 'Zorganizuj prezentację logicznie: sformułuj wstęp (z tezą/hipotezą), rozwiń argumenty i podsumuj wypowiedź trafnymi wnioskami.'),
                   const SizedBox(height: 30),
                 ],
               ),
@@ -167,23 +135,12 @@ class _QuestionsListScreenState extends State<QuestionsListScreen> {
       children: [
         Text(
           '• $title',
-          style: GoogleFonts.outfit(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Colors.white.withOpacity(0.9),
-          ),
+          style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.9)),
         ),
         const SizedBox(height: 4),
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
-          child: Text(
-            desc,
-            style: GoogleFonts.outfit(
-              fontSize: 13,
-              color: const Color(0xFF8B95A5),
-              height: 1.4,
-            ),
-          ),
+          child: Text(desc, style: GoogleFonts.outfit(fontSize: 13, color: const Color(0xFF8B95A5), height: 1.4)),
         ),
       ],
     );
@@ -205,13 +162,8 @@ class _QuestionsListScreenState extends State<QuestionsListScreen> {
       body: FutureBuilder<List<String>>(
         future: _questionsFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == snapshot.connectionState && 
-              snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFC5A880)),
-              ),
-            );
+          if (snapshot.connectionState == snapshot.connectionState && snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFC5A880))));
           } else if (snapshot.hasError) {
             return Center(
               child: Padding(
@@ -237,10 +189,7 @@ class _QuestionsListScreenState extends State<QuestionsListScreen> {
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
-              child: Text(
-                'Brak pytań w bazie.',
-                style: GoogleFonts.outfit(color: const Color(0xFF8B95A5)),
-              ),
+              child: Text('Brak pytań w bazie.', style: GoogleFonts.outfit(color: const Color(0xFF8B95A5))),
             );
           }
 
@@ -274,10 +223,7 @@ class _QuestionsListScreenState extends State<QuestionsListScreen> {
                         : null,
                     filled: true,
                     fillColor: const Color(0xFF1E232A),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide.none,
-                    ),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
                   ),
                 ),
               ),
@@ -286,10 +232,7 @@ class _QuestionsListScreenState extends State<QuestionsListScreen> {
               Expanded(
                 child: _filteredQuestions.isEmpty
                     ? Center(
-                        child: Text(
-                          'Nie znaleziono pasujących pytań.',
-                          style: GoogleFonts.outfit(color: const Color(0xFF8B95A5)),
-                        ),
+                        child: Text('Nie znaleziono pasujących pytań.', style: GoogleFonts.outfit(color: const Color(0xFF8B95A5))),
                       )
                     : ListView.builder(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -298,15 +241,13 @@ class _QuestionsListScreenState extends State<QuestionsListScreen> {
                           final questionText = _filteredQuestions[index];
                           // Find original 1-based index
                           final originalIndex = _allQuestions.indexOf(questionText);
-                          
+
                           return Card(
                             color: const Color(0xFF1E232A),
                             margin: const EdgeInsets.only(bottom: 12),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
-                              side: BorderSide(
-                                color: Colors.white.withOpacity(0.02),
-                              ),
+                              side: BorderSide(color: Colors.white.withValues(alpha: 0.02)),
                             ),
                             child: InkWell(
                               borderRadius: BorderRadius.circular(16),
@@ -321,21 +262,14 @@ class _QuestionsListScreenState extends State<QuestionsListScreen> {
                                       width: 38,
                                       height: 38,
                                       alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFC5A880).withOpacity(0.1),
-                                        shape: BoxShape.circle,
-                                      ),
+                                      decoration: BoxDecoration(color: const Color(0xFFC5A880).withOpacity(0.1), shape: BoxShape.circle),
                                       child: Text(
                                         '${originalIndex + 1}',
-                                        style: GoogleFonts.outfit(
-                                          color: const Color(0xFFC5A880),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14,
-                                        ),
+                                        style: GoogleFonts.outfit(color: const Color(0xFFC5A880), fontWeight: FontWeight.bold, fontSize: 14),
                                       ),
                                     ),
                                     const SizedBox(width: 16),
-                                    
+
                                     // Question snippet text
                                     Expanded(
                                       child: Column(
@@ -345,30 +279,18 @@ class _QuestionsListScreenState extends State<QuestionsListScreen> {
                                             questionText,
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
-                                            style: GoogleFonts.outfit(
-                                              fontSize: 15,
-                                              color: Colors.white,
-                                              height: 1.4,
-                                              fontWeight: FontWeight.w500,
-                                            ),
+                                            style: GoogleFonts.outfit(fontSize: 15, color: Colors.white, height: 1.4, fontWeight: FontWeight.w500),
                                           ),
                                           const SizedBox(height: 6),
                                           Text(
                                             'Pokaż szczegóły i wskazówki',
-                                            style: GoogleFonts.outfit(
-                                              fontSize: 12,
-                                              color: const Color(0xFFC5A880),
-                                              fontWeight: FontWeight.w600,
-                                            ),
+                                            style: GoogleFonts.outfit(fontSize: 12, color: const Color(0xFFC5A880), fontWeight: FontWeight.w600),
                                           ),
                                         ],
                                       ),
                                     ),
                                     const SizedBox(width: 8),
-                                    const Icon(
-                                      Icons.chevron_right_rounded, 
-                                      color: Colors.white30,
-                                    ),
+                                    const Icon(Icons.chevron_right_rounded, color: Colors.white30),
                                   ],
                                 ),
                               ),
