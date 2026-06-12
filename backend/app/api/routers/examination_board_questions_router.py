@@ -10,8 +10,8 @@ ai_service = AiService()
 examination_board_questions_service = ExaminationBoardQuestionsService(ai_service=ai_service)
 
 @router.post("/")
-def get_examination_board_questions(request: ExaminationBoardQuestionsRequest):
-    return examination_board_questions_service.generate_questions(
+async def get_examination_board_questions(request: ExaminationBoardQuestionsRequest):
+    return await examination_board_questions_service.generate_questions(
         request.topic_1,
         request.topic_2,
         request.student_answer
