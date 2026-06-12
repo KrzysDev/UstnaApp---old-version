@@ -1,14 +1,16 @@
+import asyncio
 from app.models.prompts import CONTEXT_SYNTHESIS_PROMPT
 from app.services.ai_service import AiService
 from app.services.vector_db_service import VectorDBService
 from app.models.prompts import *
+
 
 class ResponseEvaluationService:
     def __init__(self):
         self.ai_service = AiService()
         self.vector_db_service = VectorDBService()
 
-    def evaluate(
+    async def evaluate(            
         self,
         question: str,
         response: str,
@@ -19,8 +21,7 @@ class ResponseEvaluationService:
     ) -> str:
 
         print("Generating retrieval queries...")
-
-        retrieval_queries = self.ai_service.ask(
+        retrieval_queries = await self.ai_service.ask(   
             RETRIEVAL_QUERY_GENERATION_PROMPT.format(
                 exam_question=question,
                 exam_question2=question2,
@@ -32,14 +33,13 @@ class ResponseEvaluationService:
         )
 
         print("Retrieving documents...")
-
-        documents = self.vector_db_service.retrieve(
+        documents = await asyncio.to_thread(
+            self.vector_db_service.retrieve,
             retrieval_queries
         )
 
         print("Reranking / synthesizing context...")
-
-        reranked_context = self.ai_service.ask(
+        reranked_context = await self.ai_service.ask(     
             CONTEXT_SYNTHESIS_PROMPT.format(
                 exam_question=question,
                 exam_question2=question2,
@@ -52,7 +52,6 @@ class ResponseEvaluationService:
         )
 
         print("Evaluating...")
-
         evaluation_prompt = EVALUATION_PROMPT.format(
             exam_question=question,
             exam_question2=question2,
@@ -63,4 +62,4 @@ class ResponseEvaluationService:
             examination_board_answer=examination_board_answers,
         )
 
-        return self.ai_service.ask(evaluation_prompt)
+        return await self.ai_service.ask(evaluation_prompt) 

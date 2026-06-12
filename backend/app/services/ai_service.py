@@ -1,8 +1,8 @@
 import os
 import json
-import requests
+import httpx                        
 from dotenv import load_dotenv, find_dotenv
-from ollama import Client
+from ollama import AsyncClient       
 
 
 class AiService:
@@ -31,15 +31,14 @@ class AiService:
 
         self.backend = "ollama"
         self.model = model
-
-        self.client = Client(
+        self.client = AsyncClient(
             host="https://ollama.com",
             headers={"Authorization": f"Bearer {api_key}"}
         )
 
-    def _ask_ollama(self, prompt: str) -> str:
+    async def _ask_ollama(self, prompt: str) -> str:    
         try:
-            response = self.client.generate(
+            response = await self.client.generate(      
                 model=self.model,
                 prompt=prompt
             )
@@ -48,7 +47,6 @@ class AiService:
                 return response.response
             if isinstance(response, dict):
                 return response.get("response", "")
-
             return str(response)
 
         except Exception as e:
@@ -65,33 +63,29 @@ class AiService:
         self.site_url = os.getenv("SITE_URL", "")
         self.site_name = os.getenv("SITE_NAME", "")
 
-    def _ask_openrouter(self, prompt: str) -> str:
+    async def _ask_openrouter(self, prompt: str) -> str:    
         try:
-            response = requests.post(
-                url="https://openrouter.ai/api/v1/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {self.api_key}",
-                    "HTTP-Referer": self.site_url,
-                    "X-OpenRouter-Title": self.site_name,
-                    "Content-Type": "application/json",
-                },
-                data=json.dumps({
-                    "model": self.model,
-                    "messages": [
-                        {"role": "user", "content": prompt}
-                    ]
-                })
-            )
-
-            response.raise_for_status()
-            data = response.json()
-
-            return data["choices"][0]["message"]["content"]
+            async with httpx.AsyncClient() as client:       
+                response = await client.post(               
+                    url="https://openrouter.ai/api/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {self.api_key}",
+                        "HTTP-Referer": self.site_url,
+                        "X-OpenRouter-Title": self.site_name,
+                        "Content-Type": "application/json",
+                    },
+                    content=json.dumps({
+                        "model": self.model,
+                        "messages": [{"role": "user", "content": prompt}]
+                    })
+                )
+                response.raise_for_status()
+                return response.json()["choices"][0]["message"]["content"]
 
         except Exception as e:
             raise RuntimeError(f"OpenRouter API error: {e}")
 
-    def ask(self, prompt: str) -> str:
+    async def ask(self, prompt: str) -> str: 
         if self.backend == "ollama":
-            return self._ask_ollama(prompt)
-        return self._ask_openrouter(prompt)
+            return await self._ask_ollama(prompt)
+        return await self._ask_openrouter(prompt)
