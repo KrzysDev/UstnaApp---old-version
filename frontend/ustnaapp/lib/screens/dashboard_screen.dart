@@ -31,7 +31,7 @@ class DashboardScreen extends StatelessWidget {
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: const Color(0xFF161A22),
-                  hintText: 'http://10.0.2.2:8000/api',
+                  hintText: 'https://ustnaapp.onrender.com/api',
                   hintStyle: const TextStyle(color: Colors.white30),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -73,7 +73,6 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final examProvider = Provider.of<ExamProvider>(context);
-
     return Scaffold(
       backgroundColor: const Color(0xFF0C0E12),
       appBar: AppBar(

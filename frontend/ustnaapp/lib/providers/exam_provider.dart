@@ -12,16 +12,8 @@ class ExamProvider with ChangeNotifier {
   String _baseUrl = '';
   String get baseUrl => _baseUrl;
 
-  // Constructor
   ExamProvider() {
-    // Determine default URL based on platform
-    if (kIsWeb) {
-      _baseUrl = 'http://localhost:8000/api';
-    } else if (Platform.isAndroid) {
-      _baseUrl = 'http://10.0.2.2:8000/api'; // Android emulator address to host machine
-    } else {
-      _baseUrl = 'http://localhost:8000/api'; // iOS simulator or desktop
-    }
+    _baseUrl = "https://ustnaapp.onrender.com/api";
     _apiService = ApiService(baseUrl: _baseUrl);
   }
 
