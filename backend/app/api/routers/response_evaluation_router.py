@@ -2,6 +2,7 @@ import json
 from fastapi import APIRouter, HTTPException, Depends
 from app.models.schemas import EvaluationRequest
 from app.services.response_evaluation_service import ResponseEvaluationService
+from app.utils.limiter import rate_limit
 
 router = APIRouter(prefix="/response-evaluation", tags=["response-evaluation"])
 
@@ -21,13 +22,13 @@ def _clean_json(raw: str) -> str:
     return cleaned.strip()
 
 
-@router.post("/")
+@router.post("/", dependencies=rate_limit(times=5, seconds=60))
 async def evaluate_response(
     request: EvaluationRequest,
     evaluation_service: ResponseEvaluationService = Depends(get_evaluation_service)
 ):
     try:
-        evaluation = await evaluation_service.evaluate(    
+        evaluation = await evaluation_service.evaluate(
             question=request.question1,
             response=request.response,
             examination_board_question1=request.examination_board_question1,

@@ -1,12 +1,12 @@
 import os
 import json
-import httpx                        
+import httpx
 from dotenv import load_dotenv, find_dotenv
-from ollama import AsyncClient       
+from ollama import AsyncClient
 
 
 class AiService:
-    def __init__(self, testing_model: str = "deepseek-v4-pro:cloud", production_model: str = "deepseek/deepseek-v4-pro"):
+    def __init__(self, testing_model: str = "google/gemini-3.5-flash", production_model: str = "deepseek/deepseek-v4-pro"):
         self._load_env()
         self.ai_testing = self._get_bool_env("AI_TESTING", default=True)
 
@@ -36,9 +36,9 @@ class AiService:
             headers={"Authorization": f"Bearer {api_key}"}
         )
 
-    async def _ask_ollama(self, prompt: str) -> str:    
+    async def _ask_ollama(self, prompt: str) -> str:
         try:
-            response = await self.client.generate(      
+            response = await self.client.generate(
                 model=self.model,
                 prompt=prompt
             )
@@ -63,10 +63,10 @@ class AiService:
         self.site_url = os.getenv("SITE_URL", "")
         self.site_name = os.getenv("SITE_NAME", "")
 
-    async def _ask_openrouter(self, prompt: str) -> str:    
+    async def _ask_openrouter(self, prompt: str) -> str:
         try:
-            async with httpx.AsyncClient() as client:       
-                response = await client.post(               
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
                     url="https://openrouter.ai/api/v1/chat/completions",
                     headers={
                         "Authorization": f"Bearer {self.api_key}",
@@ -85,7 +85,7 @@ class AiService:
         except Exception as e:
             raise RuntimeError(f"OpenRouter API error: {e}")
 
-    async def ask(self, prompt: str) -> str: 
+    async def ask(self, prompt: str) -> str:
         if self.backend == "ollama":
             return await self._ask_ollama(prompt)
         return await self._ask_openrouter(prompt)

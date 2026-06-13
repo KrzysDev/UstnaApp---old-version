@@ -1,16 +1,18 @@
-from fastapi import APIRouter
+# pip install aiofiles
+import aiofiles
+import asyncio
 import random
 import json
 import base64
 import mimetypes
 from pathlib import Path
-
+from fastapi import APIRouter
 from app.models.schemas import Question, SetOfQuestionsResponse
 
 router = APIRouter(prefix="/set-of-questions", tags=["set-of-questions"])
 
 
-def image_to_base64(image_path: Path) -> tuple[str, str] | tuple[None, None]:
+async def image_to_base64(image_path: Path) -> tuple[str, str] | tuple[None, None]:
     if not image_path.exists():
         print(f"[ERROR] File does not exist: {image_path}")
         return None, None
@@ -19,24 +21,26 @@ def image_to_base64(image_path: Path) -> tuple[str, str] | tuple[None, None]:
     if mime_type is None:
         mime_type = "image/jpeg"
 
-    with open(image_path, "rb") as f:
-        return base64.b64encode(f.read()).decode("utf-8"), mime_type
+    async with aiofiles.open(image_path, "rb") as f:       
+        content = await f.read()
+        return base64.b64encode(content).decode("utf-8"), mime_type
 
 
 @router.get("/")
-def get_random_set_of_questions() -> SetOfQuestionsResponse:
-
+async def get_random_set_of_questions() -> SetOfQuestionsResponse:  
     questions_file = "app/data/questions.txt"
 
-    with open(questions_file, "r", encoding="utf-8") as file:
-        questions = file.read().splitlines()
+    async with aiofiles.open(questions_file, "r", encoding="utf-8") as file:   
+        content = await file.read()
+    questions = [line for line in content.splitlines() if line.strip()]
 
     public_question_text = random.choice(questions)
 
     secret_file = "app/assets/questions/secret_questions.json"
 
-    with open(secret_file, "r", encoding="utf-8") as file:
-        secret_questions = json.load(file)
+    async with aiofiles.open(secret_file, "r", encoding="utf-8") as file:      
+        content = await file.read()
+    secret_questions = json.loads(content)
 
     secret = random.choice(secret_questions)
 
@@ -52,7 +56,7 @@ def get_random_set_of_questions() -> SetOfQuestionsResponse:
         relative_path = secret["image_path"].lstrip("/")
         img_path = Path(relative_path)
 
-        base64_str, mime_type = image_to_base64(img_path)
+        base64_str, mime_type = await image_to_base64(img_path)     
 
         if base64_str:
             question2.image_base64 = base64_str
@@ -70,7 +74,4 @@ def get_random_set_of_questions() -> SetOfQuestionsResponse:
         image_filename=None
     )
 
-    return SetOfQuestionsResponse(
-        question1=question1,
-        question2=question2
-    )
+    return SetOfQuestionsResponse(question1=question1, question2=question2)
