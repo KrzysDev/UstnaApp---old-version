@@ -6,7 +6,7 @@ from ollama import AsyncClient
 
 
 class AiService:
-    def __init__(self, testing_model: str = "google/gemini-3.5-flash", production_model: str = "deepseek/deepseek-v4-pro"):
+    def __init__(self, testing_model: str = "google/gemini-3.1-flash-lite-preview", production_model: str = "deepseek/deepseek-v4-pro"):
         self._load_env()
         self.ai_testing = self._get_bool_env("AI_TESTING", default=True)
 
