@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import '../models/models.dart';
 import '../services/api_service.dart';
@@ -9,20 +8,11 @@ class ExamProvider with ChangeNotifier {
   final AudioService _audioService = AudioService();
   late ApiService _apiService;
 
-  String _baseUrl = '';
+  final String _baseUrl = 'https://ustnaapp.onrender.com';
   String get baseUrl => _baseUrl;
 
   ExamProvider() {
-    _baseUrl = "https://ustnaapp.onrender.com/api";
     _apiService = ApiService(baseUrl: _baseUrl);
-  }
-
-  void updateBaseUrl(String url) {
-    if (url.trim().isNotEmpty) {
-      _baseUrl = url.trim();
-      _apiService = ApiService(baseUrl: _baseUrl);
-      notifyListeners();
-    }
   }
 
   // --- Exam States ---
