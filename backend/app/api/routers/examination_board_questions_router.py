@@ -1,7 +1,7 @@
 from app.models.schemas import ExaminationBoardQuestionsRequest
 from app.services.examination_board_questions_service import ExaminationBoardQuestionsService
 from app.services.ai_service import AiService
-
+from app.utils.limiter import rate_limit
 from fastapi import APIRouter
 
 router = APIRouter(prefix="/examination-board-questions", tags=["examination-board-questions"])
@@ -9,7 +9,8 @@ router = APIRouter(prefix="/examination-board-questions", tags=["examination-boa
 ai_service = AiService()
 examination_board_questions_service = ExaminationBoardQuestionsService(ai_service=ai_service)
 
-@router.post("/")
+
+@router.post("/", dependencies=rate_limit(times=5, seconds=60))
 async def get_examination_board_questions(request: ExaminationBoardQuestionsRequest):
     return await examination_board_questions_service.generate_questions(
         request.topic_1,
