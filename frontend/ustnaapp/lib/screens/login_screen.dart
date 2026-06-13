@@ -21,19 +21,23 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _nativeGoogleSignIn() async {
     setState(() => _isLoading = true);
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn(
-        serverClientId: '169631831364-pkqujs7l48alujgjs3rohd370jn3enmq.apps.googleusercontent.com',
-        scopes: ['email', 'profile'],
+      final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+      await googleSignIn.initialize(
+        serverClientId: '169631831364-8qe3ims1a3p6kvkqjihcopl24luomuk8.apps.googleusercontent.com',
       );
       
-      final googleUser = await googleSignIn.signIn();
+      var googleUser = await googleSignIn.attemptLightweightAuthentication();
+      googleUser ??= await googleSignIn.authenticate();
+
       if (googleUser == null) {
         throw 'Logowanie zostało przerwane';
       }
 
-      final googleAuth = await googleUser.authentication;
-      final accessToken = googleAuth.accessToken;
-      final idToken = googleAuth.idToken;
+      final authorization =
+          await googleUser.authorizationClient.authorizationForScopes(['email', 'profile']) ??
+          await googleUser.authorizationClient.authorizeScopes(['email', 'profile']);
+
+      final idToken = googleUser.authentication.idToken;
 
       if (idToken == null) {
         throw 'Brak ID Tokena.';
@@ -42,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final response = await Supabase.instance.client.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken,
-        accessToken: accessToken,
+        accessToken: authorization.accessToken,
       );
 
       if (response.session != null && mounted) {
