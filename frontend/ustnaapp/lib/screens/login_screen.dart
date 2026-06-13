@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -10,8 +12,53 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool _isLoading = false;
+
   void _handleStart() {
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const DashboardScreen()));
+  }
+
+  Future<void> _nativeGoogleSignIn() async {
+    setState(() => _isLoading = true);
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        serverClientId: '169631831364-pkqujs7l48alujgjs3rohd370jn3enmq.apps.googleusercontent.com',
+        scopes: ['email', 'profile'],
+      );
+      
+      final googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        throw 'Logowanie zostało przerwane';
+      }
+
+      final googleAuth = await googleUser.authentication;
+      final accessToken = googleAuth.accessToken;
+      final idToken = googleAuth.idToken;
+
+      if (idToken == null) {
+        throw 'Brak ID Tokena.';
+      }
+
+      final response = await Supabase.instance.client.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: accessToken,
+      );
+
+      if (response.session != null && mounted) {
+        _handleStart();
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Błąd logowania: $error')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override
@@ -103,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Start Button
                     ElevatedButton(
-                      onPressed: _handleStart,
+                      onPressed: _isLoading ? null : _handleStart,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFC5A880),
                         foregroundColor: const Color(0xFF1E232A),
@@ -111,7 +158,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       ),
-                      child: Text('Rozpocznij', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w600)),
+                      child: Text('Kontynuuj jako gość', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w600)),
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    // Google Login Button
+                    OutlinedButton.icon(
+                      onPressed: _isLoading ? null : _nativeGoogleSignIn,
+                      icon: _isLoading 
+                          ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                          : const Icon(Icons.login, color: Colors.white),
+                      label: Text('Zaloguj przez Google', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white)),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFC5A880)),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      ),
                     ),
                     const SizedBox(height: 24),
                   ],
