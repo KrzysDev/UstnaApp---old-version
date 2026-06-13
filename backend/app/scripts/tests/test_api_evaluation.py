@@ -7,19 +7,17 @@ from fastapi.testclient import TestClient
 from app.main import app
 from app.api.routers.response_evaluation_router import get_evaluation_service
 
-client = TestClient(app)
+# client initialized in context manager within tests
 
 class MockEvaluationService:
-    def evaluate(
+    async def evaluate(
         self,
         question: str,
         response: str,
         examination_board_question1: str = "",
-        examination_board_question11_answer: str = "",
         examination_board_question2: str = "",
-        examination_board_question12_answer: str = "",
-        question2: str = "",
-        response2: str = ""
+        examination_board_answers: str = "",
+        question2: str = ""
     ) -> str:
         # Mock successful evaluation JSON string
         return """
@@ -38,15 +36,16 @@ app.dependency_overrides[get_evaluation_service] = get_mock_service
 def test_evaluation_success():
     payload = {
         "question1": "Pytanie 1",
-        "response1": "Odpowiedz 1",
-        "examination_board_question1": "Pytanie komisji 1",
-        "examination_board_question11_answer": "Odpowiedz komisji 1",
-        "examination_board_question2": "Pytanie komisji 2",
-        "examination_board_question12_answer": "Odpowiedz komisji 2",
         "question2": "Pytanie 2",
-        "response2": "Odpowiedz 2"
+        "response": "Odpowiedz 1",
+        "examination_board_question1": "Pytanie komisji 1",
+        "examination_board_question2": "Pytanie komisji 2",
+        "examination_board_answers": "Odpowiedz komisji 1"
     }
-    response = client.post("/api/response-evaluation/", json=payload)
+    with TestClient(app) as client:
+        response = client.post("/response-evaluation/", json=payload)
+    print("STATUS CODE:", response.status_code)
+    print("RESPONSE TEXT:", response.text)
     assert response.status_code == 200
     data = response.json()
     assert data["score"] == 85
@@ -55,7 +54,7 @@ def test_evaluation_success():
     print("[OK] Test evaluation success passed!")
 
 class MockEvaluationServiceInvalidJSON:
-    def evaluate(self, *args, **kwargs) -> str:
+    async def evaluate(self, *args, **kwargs) -> str:
         return "To nie jest poprawny JSON"
 
 def get_mock_service_invalid_json():
@@ -65,15 +64,16 @@ def test_evaluation_fallback():
     app.dependency_overrides[get_evaluation_service] = get_mock_service_invalid_json
     payload = {
         "question1": "Pytanie 1",
-        "response1": "Odpowiedz 1",
-        "examination_board_question1": "",
-        "examination_board_question11_answer": "",
-        "examination_board_question2": "",
-        "examination_board_question12_answer": "",
         "question2": "",
-        "response2": ""
+        "response": "Odpowiedz 1",
+        "examination_board_question1": "",
+        "examination_board_question2": "",
+        "examination_board_answers": ""
     }
-    response = client.post("/api/response-evaluation/", json=payload)
+    with TestClient(app) as client:
+        response = client.post("/response-evaluation/", json=payload)
+    print("STATUS CODE:", response.status_code)
+    print("RESPONSE TEXT:", response.text)
     assert response.status_code == 200
     data = response.json()
     assert data["score"] == 0
