@@ -9,7 +9,7 @@ from app.api.routers import (
     response_evaluation_router,
     examination_board_questions_router,
     set_of_questions_router,
-    set_of_questions_router,
+    question_router,
 )
 
 app = FastAPI()
@@ -42,4 +42,4 @@ app.include_router(transcribing_router.router)
 app.include_router(response_evaluation_router.router)
 app.include_router(examination_board_questions_router.router)
 app.include_router(set_of_questions_router.router)
-app.include_router(set_of_questions_router.router)
+app.include_router(question_router.router)
