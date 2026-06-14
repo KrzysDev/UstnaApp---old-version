@@ -15,7 +15,9 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
 
   void _handleStart() {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const DashboardScreen()));
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const DashboardScreen()),
+    );
   }
 
   Future<void> _nativeGoogleSignIn() async {
@@ -23,9 +25,10 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn.instance;
       await googleSignIn.initialize(
-        serverClientId: '169631831364-8qe3ims1a3p6kvkqjihcopl24luomuk8.apps.googleusercontent.com',
+        serverClientId:
+            '169631831364-8qe3ims1a3p6kvkqjihcopl24luomuk8.apps.googleusercontent.com',
       );
-      
+
       var googleUser = await googleSignIn.attemptLightweightAuthentication();
       googleUser ??= await googleSignIn.authenticate();
 
@@ -34,8 +37,14 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       final authorization =
-          await googleUser.authorizationClient.authorizationForScopes(['email', 'profile']) ??
-          await googleUser.authorizationClient.authorizeScopes(['email', 'profile']);
+          await googleUser.authorizationClient.authorizationForScopes([
+            'email',
+            'profile',
+          ]) ??
+          await googleUser.authorizationClient.authorizeScopes([
+            'email',
+            'profile',
+          ]);
 
       final idToken = googleUser.authentication.idToken;
 
@@ -54,9 +63,9 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Błąd logowania: $error')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Błąd logowania: $error')));
       }
     } finally {
       if (mounted) {
@@ -73,7 +82,11 @@ class _LoginScreenState extends State<LoginScreen> {
           // Background Gradient
           Container(
             decoration: const BoxDecoration(
-              gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFF161A22), Color(0xFF0C0E12)]),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFF161A22), Color(0xFF0C0E12)],
+              ),
             ),
           ),
 
@@ -86,7 +99,13 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                boxShadow: [BoxShadow(color: const Color(0xFFC5A880).withOpacity(0.08), blurRadius: 100, spreadRadius: 50)],
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFC5A880).withOpacity(0.08),
+                    blurRadius: 100,
+                    spreadRadius: 50,
+                  ),
+                ],
               ),
             ),
           ),
@@ -108,10 +127,23 @@ class _LoginScreenState extends State<LoginScreen> {
                         decoration: BoxDecoration(
                           color: const Color(0xFF1E232A),
                           borderRadius: BorderRadius.circular(28),
-                          border: Border.all(color: const Color(0xFFC5A880).withOpacity(0.2), width: 1.5),
-                          boxShadow: [BoxShadow(color: const Color(0xFFC5A880).withOpacity(0.05), blurRadius: 20, spreadRadius: 2)],
+                          border: Border.all(
+                            color: const Color(0xFFC5A880).withOpacity(0.2),
+                            width: 1.5,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFFC5A880).withOpacity(0.05),
+                              blurRadius: 20,
+                              spreadRadius: 2,
+                            ),
+                          ],
                         ),
-                        child: const Icon(Icons.menu_book_rounded, size: 72, color: Color(0xFFC5A880)),
+                        child: const Icon(
+                          Icons.menu_book_rounded,
+                          size: 72,
+                          color: Color(0xFFC5A880),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -120,7 +152,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text(
                       'UstnaApp',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.outfit(fontSize: 38, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.5),
+                      style: GoogleFonts.outfit(
+                        fontSize: 38,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 1.5,
+                      ),
                     ),
                     const SizedBox(height: 8),
 
@@ -128,7 +165,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text(
                       'Twój asystent maturalny',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.outfit(fontSize: 16, color: const Color(0xFF8B95A5), fontWeight: FontWeight.w400),
+                      style: GoogleFonts.outfit(
+                        fontSize: 16,
+                        color: const Color(0xFF8B95A5),
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                     const SizedBox(height: 48),
 
@@ -138,45 +179,64 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: BoxDecoration(
                         color: const Color(0xFF1E232A).withOpacity(0.7),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.05),
+                        ),
                       ),
                       child: Column(
                         children: [
-                          _buildFeatureRow(context, Icons.check_circle_outline_rounded, 'Baza pytań jawnych', 'Przeglądaj oficjalne pytania CKE z języka polskiego.'),
+                          _buildFeatureRow(
+                            context,
+                            Icons.check_circle_outline_rounded,
+                            'Baza pytań jawnych',
+                            'Przeglądaj oficjalne pytania CKE z języka polskiego.',
+                          ),
                           const Divider(height: 24, color: Colors.white10),
-                          _buildFeatureRow(context, Icons.record_voice_over_rounded, 'Symulacja egzaminu ustnego', 'Wylosuj zestaw, odpowiedz do mikrofonu i poczuj atmosferę matury.'),
+                          _buildFeatureRow(
+                            context,
+                            Icons.record_voice_over_rounded,
+                            'Symulacja egzaminu ustnego',
+                            'Wylosuj zestaw, odpowiedz do mikrofonu i poczuj atmosferę matury.',
+                          ),
                           const Divider(height: 24, color: Colors.white10),
-                          _buildFeatureRow(context, Icons.auto_awesome_rounded, 'Ocena przez sztuczną inteligencję', 'Otrzymaj pełny raport z punktacją per kryterium i wykazem błędów.'),
+                          _buildFeatureRow(
+                            context,
+                            Icons.auto_awesome_rounded,
+                            'Ocena przez sztuczną inteligencję',
+                            'Otrzymaj pełny raport z punktacją per kryterium i wykazem błędów.',
+                          ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 48),
 
-                    // Start Button
-                    ElevatedButton(
-                      onPressed: _isLoading ? null : _handleStart,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFC5A880),
-                        foregroundColor: const Color(0xFF1E232A),
-                        elevation: 2,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      ),
-                      child: Text('Kontynuuj jako gość', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w600)),
-                    ),
-                    const SizedBox(height: 16),
-                    
                     // Google Login Button
                     OutlinedButton.icon(
                       onPressed: _isLoading ? null : _nativeGoogleSignIn,
-                      icon: _isLoading 
-                          ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      icon: _isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
                           : const Icon(Icons.login, color: Colors.white),
-                      label: Text('Zaloguj przez Google', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white)),
+                      label: Text(
+                        'Zaloguj przez Google',
+                        style: GoogleFonts.outfit(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Color(0xFFC5A880)),
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -190,7 +250,12 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildFeatureRow(BuildContext context, IconData icon, String title, String subtitle) {
+  Widget _buildFeatureRow(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String subtitle,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -202,10 +267,20 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               Text(
                 title,
-                style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
+                style: GoogleFonts.outfit(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(height: 4),
-              Text(subtitle, style: GoogleFonts.outfit(fontSize: 13, color: const Color(0xFF8B95A5))),
+              Text(
+                subtitle,
+                style: GoogleFonts.outfit(
+                  fontSize: 13,
+                  color: const Color(0xFF8B95A5),
+                ),
+              ),
             ],
           ),
         ),
