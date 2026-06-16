@@ -3,17 +3,51 @@ import 'package:flutter/foundation.dart';
 import '../models/models.dart';
 import '../services/api_service.dart';
 import '../services/audio_service.dart';
+import '../services/user_service.dart';
 
 class ExamProvider with ChangeNotifier {
   final AudioService _audioService = AudioService();
   late ApiService _apiService;
+  late UserService _userService;
 
   final String _baseUrl = 'https://ustnaapp.onrender.com';
   String get baseUrl => _baseUrl;
 
+  // --- Free tries state ---
+  int _freeTries = 2;
+  int get freeTries => _freeTries;
+  bool _hasFreeTriesLoaded = false;
+  bool get hasFreeTriesLoaded => _hasFreeTriesLoaded;
+  bool get canStartExam => _freeTries > 0;
+  String? _freeTriesError;
+  String? get freeTriesError => _freeTriesError;
+
   ExamProvider() {
     _apiService = ApiService(baseUrl: _baseUrl);
+    _userService = UserService();
+    _loadFreeTries();
   }
+
+  /// Laduje aktualna liczbe darmowych prob z bazy
+  Future<void> _loadFreeTries() async {
+    _freeTriesError = null;
+    try {
+      _freeTries = await _userService.getFreeTries();
+    } catch (e) {
+      _freeTriesError = e.toString();
+      print('ExamProvider: Error loading free tries: $e');
+      // W razie bledu zachowujemy ostatnia znana wartosc, aby nie
+      // odblokowac uzytkownika, ktory wykorzystal juz wszystkie proby.
+    } finally {
+      _hasFreeTriesLoaded = true;
+      notifyListeners();
+    }
+  }
+
+  /// Publiczne, wymuszone odswiezenie liczby darmowych prob z bazy.
+  /// Wywolywane m.in. po zalogowaniu (wejsciu na dashboard) oraz po
+  /// powrocie z egzaminu, aby UI zawsze zgadzalo sie z Supabase.
+  Future<void> refreshFreeTries() => _loadFreeTries();
 
   // --- Exam States ---
   bool _isLoading = false;
@@ -97,11 +131,34 @@ class ExamProvider with ChangeNotifier {
 
   // --- Step 0: Draw Questions ---
   Future<void> drawSetOfQuestions() async {
+    // Sprawdzenie czy sa jeszcze proby
+    if (_freeTries < 1) {
+      _errorMessage =
+          'Brak darmowych prób. Skontaktuj się z administratorem lub zaloguj się, aby dodać więcej prób.';
+      notifyListeners();
+      return;
+    }
+
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
+      // Darmowa próba jest odejmowana natychmiast przy rozpoczęciu symulacji
+      try {
+        await _userService.consumeFreeUse();
+      } catch (e) {
+        _freeTriesError = e.toString();
+        print('ExamProvider: Error consuming free use: $e');
+        _errorMessage =
+            'Nie udało się rozpocząć egzaminu (błąd pobrania próby): $e';
+        _isLoading = false;
+        notifyListeners();
+        return;
+      } finally {
+        await refreshFreeTries();
+      }
+
       _examSet = await _apiService.getRandomSetOfQuestions();
       _preparationTime = 15 * 60;
       startPreparationTimer();
@@ -161,13 +218,16 @@ class ExamProvider with ChangeNotifier {
         notifyListeners();
 
         final text = await _apiService.transcribeAudio(path);
-        _monologueTranscript = text.isNotEmpty ? text : 'Brak transkrypcji (brak wykrytej mowy).';
+        _monologueTranscript = text.isNotEmpty
+            ? text
+            : 'Brak transkrypcji (brak wykrytej mowy).';
       } else {
         _errorMessage = 'Nie udało się odnaleźć pliku z nagraniem.';
       }
     } catch (e) {
       _errorMessage = 'Błąd transkrypcji monologu: $e';
-      _monologueTranscript = 'Błąd transkrypcji. Wpisz swoją odpowiedź tutaj ręcznie.';
+      _monologueTranscript =
+          'Błąd transkrypcji. Wpisz swoją odpowiedź tutaj ręcznie.';
     } finally {
       _isTranscribingMonologue = false;
       notifyListeners();
@@ -186,9 +246,14 @@ class ExamProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      if (_examSet == null) throw Exception('Brak aktywnego zestawu egzaminacyjnego.');
+      if (_examSet == null)
+        throw Exception('Brak aktywnego zestawu egzaminacyjnego.');
 
-      final questions = await _apiService.getBoardQuestions(topic1: _examSet!.question1.question, topic2: _examSet!.question2.question, studentAnswer: _monologueTranscript);
+      final questions = await _apiService.getBoardQuestions(
+        topic1: _examSet!.question1.question,
+        topic2: _examSet!.question2.question,
+        studentAnswer: _monologueTranscript,
+      );
 
       _boardQuestions = questions;
       _currentBoardQuestionIndex = 0;
@@ -196,7 +261,10 @@ class ExamProvider with ChangeNotifier {
     } catch (e) {
       _errorMessage = 'Nie udało się wygenerować pytań komisji: $e';
       // Fallback standard questions in case LLM fails or returns empty
-      _boardQuestions = ['Proszę rozwinąć wątek dotyczący lektury z zadania 1. w kontekście postawy bohatera.', 'W jaki sposób załączone dzieło z zadania 2. odnosi się do współczesnych realiów?'];
+      _boardQuestions = [
+        'Proszę rozwinąć wątek dotyczący lektury z zadania 1. w kontekście postawy bohatera.',
+        'W jaki sposób załączone dzieło z zadania 2. odnosi się do współczesnych realiów?',
+      ];
     } finally {
       _isGeneratingBoardQuestions = false;
       notifyListeners();
@@ -226,13 +294,16 @@ class ExamProvider with ChangeNotifier {
         notifyListeners();
 
         final text = await _apiService.transcribeAudio(path);
-        _boardAnswers[_currentBoardQuestionIndex] = text.isNotEmpty ? text : 'Brak transkrypcji (brak wykrytej mowy).';
+        _boardAnswers[_currentBoardQuestionIndex] = text.isNotEmpty
+            ? text
+            : 'Brak transkrypcji (brak wykrytej mowy).';
       } else {
         _errorMessage = 'Nie udało się odnaleźć pliku z nagraniem.';
       }
     } catch (e) {
       _errorMessage = 'Błąd transkrypcji odpowiedzi: $e';
-      _boardAnswers[_currentBoardQuestionIndex] = 'Błąd transkrypcji. Wpisz swoją odpowiedź tutaj ręcznie.';
+      _boardAnswers[_currentBoardQuestionIndex] =
+          'Błąd transkrypcji. Wpisz swoją odpowiedź tutaj ręcznie.';
     } finally {
       _isTranscribingBoardAnswer = false;
       notifyListeners();
@@ -262,9 +333,17 @@ class ExamProvider with ChangeNotifier {
       if (_boardQuestions.length < 2) throw Exception('Brak pytań komisji.');
 
       // Combine board answers into one string as expected by the backend EvaluationRequest
-      final combinedBoardAnswers = 'Odpowiedź na Pytanie 1: ${_boardAnswers[0]}\n\nOdpowiedź na Pytanie 2: ${_boardAnswers[1]}';
+      final combinedBoardAnswers =
+          'Odpowiedź na Pytanie 1: ${_boardAnswers[0]}\n\nOdpowiedź na Pytanie 2: ${_boardAnswers[1]}';
 
-      final result = await _apiService.evaluateResponse(question1: _examSet!.question1.question, question2: _examSet!.question2.question, responseText: _monologueTranscript, examinationBoardQuestion1: _boardQuestions[0], examinationBoardQuestion2: _boardQuestions[1], examinationBoardAnswers: combinedBoardAnswers);
+      final result = await _apiService.evaluateResponse(
+        question1: _examSet!.question1.question,
+        question2: _examSet!.question2.question,
+        responseText: _monologueTranscript,
+        examinationBoardQuestion1: _boardQuestions[0],
+        examinationBoardQuestion2: _boardQuestions[1],
+        examinationBoardAnswers: combinedBoardAnswers,
+      );
 
       _evaluationResult = result;
     } catch (e) {

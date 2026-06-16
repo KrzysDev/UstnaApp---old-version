@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'providers/exam_provider.dart';
 import 'screens/login_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: 'https://avwztcdnxcsvssuggnfj.supabase.co',
+    anonKey: 'sb_publishable_PJquTrFYZs_synsITNRI8w_qD4gw6jy',
+  );
   runApp(
     MultiProvider(
       providers: [
