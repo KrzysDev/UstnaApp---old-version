@@ -46,7 +46,11 @@ class _ExamPreparationScreenState extends State<ExamPreparationScreen> {
     if (provider.isLoading) {
       return Scaffold(
         backgroundColor: const Color(0xFF0C0E12),
-        body: const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Color(0xFFC5A880)))),
+        body: const Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation(Color(0xFFC5A880)),
+          ),
+        ),
       );
     }
 
@@ -60,9 +64,16 @@ class _ExamPreparationScreenState extends State<ExamPreparationScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline, color: Colors.redAccent, size: 48),
+                const Icon(
+                  Icons.error_outline,
+                  color: Colors.redAccent,
+                  size: 48,
+                ),
                 const SizedBox(height: 16),
-                Text('Błąd losowania zestawu', style: GoogleFonts.outfit(color: Colors.white, fontSize: 18)),
+                Text(
+                  'Błąd losowania zestawu',
+                  style: GoogleFonts.outfit(color: Colors.white, fontSize: 18),
+                ),
                 const SizedBox(height: 8),
                 Text(
                   provider.errorMessage!,
@@ -70,7 +81,10 @@ class _ExamPreparationScreenState extends State<ExamPreparationScreen> {
                   style: GoogleFonts.outfit(color: const Color(0xFF8B95A5)),
                 ),
                 const SizedBox(height: 24),
-                ElevatedButton(onPressed: () => provider.drawSetOfQuestions(), child: const Text('Spróbuj ponownie')),
+                ElevatedButton(
+                  onPressed: () => provider.drawSetOfQuestions(),
+                  child: const Text('Spróbuj ponownie'),
+                ),
               ],
             ),
           ),
@@ -93,14 +107,14 @@ class _ExamPreparationScreenState extends State<ExamPreparationScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false,
-        title: Text('Krok 1 z 4: Przygotowanie', style: GoogleFonts.outfit(color: Colors.white)),
+        title: Text(
+          'Krok 1 z 4: Przygotowanie',
+          style: GoogleFonts.outfit(color: Colors.white),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.close, color: Colors.white60),
-            onPressed: () {
-              provider.resetExam();
-              Navigator.pop(context);
-            },
+            onPressed: () => _handleExit(context),
           ),
         ],
       ),
@@ -110,7 +124,10 @@ class _ExamPreparationScreenState extends State<ExamPreparationScreen> {
           Container(
             margin: const EdgeInsets.all(24),
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: const Color(0xFF1E232A), borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1E232A),
+              borderRadius: BorderRadius.circular(20),
+            ),
             child: Selector<ExamProvider, int>(
               selector: (_, p) => p.preparationTime,
               builder: (_, time, __) {
@@ -121,7 +138,11 @@ class _ExamPreparationScreenState extends State<ExamPreparationScreen> {
                     const SizedBox(width: 12),
                     Text(
                       _formatDuration(time),
-                      style: GoogleFonts.outfit(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.outfit(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 );
@@ -135,9 +156,16 @@ class _ExamPreparationScreenState extends State<ExamPreparationScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildQuestionCard(title: 'Zadanie 1: Pytanie Jawne', content: examSet.question1.question),
+                  _buildQuestionCard(
+                    title: 'Zadanie 1: Pytanie Jawne',
+                    content: examSet.question1.question,
+                  ),
                   const SizedBox(height: 24),
-                  _buildQuestionCard(title: 'Zadanie 2: Pytanie Niejawne', content: examSet.question2.question, imageBytes: _cachedImage),
+                  _buildQuestionCard(
+                    title: 'Zadanie 2: Pytanie Niejawne',
+                    content: examSet.question2.question,
+                    imageBytes: _cachedImage,
+                  ),
                 ],
               ),
             ),
@@ -148,8 +176,14 @@ class _ExamPreparationScreenState extends State<ExamPreparationScreen> {
               padding: const EdgeInsets.all(24),
               child: ElevatedButton(
                 onPressed: () {
-                  provider.skipPreparation();
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const ExamMonologueScreen()));
+                  // Zakonczenie przygotowania przechodzi do nastepnego kroku
+                  // (monolog), a nie wychodzi z sesji egzaminu.
+                  provider.stopPreparationTimer();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const ExamMonologueScreen(),
+                    ),
+                  );
                 },
                 child: const Text('Zakończ przygotowanie'),
               ),
@@ -160,16 +194,29 @@ class _ExamPreparationScreenState extends State<ExamPreparationScreen> {
     );
   }
 
-  Widget _buildQuestionCard({required String title, required String content, Uint8List? imageBytes}) {
+  Widget _buildQuestionCard({
+    required String title,
+    required String content,
+    Uint8List? imageBytes,
+  }) {
     return Container(
       padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(color: const Color(0xFF1E232A), borderRadius: BorderRadius.circular(24)),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E232A),
+        borderRadius: BorderRadius.circular(24),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: GoogleFonts.outfit(color: const Color(0xFFC5A880))),
+          Text(
+            title,
+            style: GoogleFonts.outfit(color: const Color(0xFFC5A880)),
+          ),
           const SizedBox(height: 12),
-          Text(content, style: GoogleFonts.outfit(color: Colors.white, height: 1.5)),
+          Text(
+            content,
+            style: GoogleFonts.outfit(color: Colors.white, height: 1.5),
+          ),
           if (imageBytes != null) ...[
             const SizedBox(height: 20),
             ClipRRect(
@@ -180,5 +227,12 @@ class _ExamPreparationScreenState extends State<ExamPreparationScreen> {
         ],
       ),
     );
+  }
+
+  /// Obsługuje wyjście z egzaminu przez przycisk X
+  Future<void> _handleExit(BuildContext context) async {
+    final provider = context.read<ExamProvider>();
+    provider.resetExam();
+    Navigator.pop(context);
   }
 }
