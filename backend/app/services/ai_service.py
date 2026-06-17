@@ -1,12 +1,17 @@
-import os
 import json
+import os
+
 import httpx
-from dotenv import load_dotenv, find_dotenv
+from dotenv import find_dotenv, load_dotenv
 from ollama import AsyncClient
 
 
 class AiService:
-    def __init__(self, testing_model: str = "google/gemini-3.1-flash-lite-preview", production_model: str = "google/gemini-3.1-flash-lite-preview"):
+    def __init__(
+        self,
+        testing_model: str = "google/gemini-3.1-flash-lite-preview",
+        production_model: str = "openai/gpt-5-mini",
+    ):
         self._load_env()
         self.ai_testing = self._get_bool_env("AI_TESTING", default=True)
 
@@ -32,16 +37,12 @@ class AiService:
         self.backend = "ollama"
         self.model = model
         self.client = AsyncClient(
-            host="https://ollama.com",
-            headers={"Authorization": f"Bearer {api_key}"}
+            host="https://ollama.com", headers={"Authorization": f"Bearer {api_key}"}
         )
 
     async def _ask_ollama(self, prompt: str) -> str:
         try:
-            response = await self.client.generate(
-                model=self.model,
-                prompt=prompt
-            )
+            response = await self.client.generate(model=self.model, prompt=prompt)
 
             if hasattr(response, "response"):
                 return response.response
@@ -74,10 +75,12 @@ class AiService:
                         "X-OpenRouter-Title": self.site_name,
                         "Content-Type": "application/json",
                     },
-                    content=json.dumps({
-                        "model": self.model,
-                        "messages": [{"role": "user", "content": prompt}]
-                    })
+                    content=json.dumps(
+                        {
+                            "model": self.model,
+                            "messages": [{"role": "user", "content": prompt}],
+                        }
+                    ),
                 )
                 response.raise_for_status()
                 return response.json()["choices"][0]["message"]["content"]
