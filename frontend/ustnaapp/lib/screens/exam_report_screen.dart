@@ -14,7 +14,13 @@ class ExamReportScreen extends StatefulWidget {
 class _ExamReportScreenState extends State<ExamReportScreen> {
   int _tipIndex = 0;
   Timer? _tipTimer;
-  final List<String> _maturaTips = ['Komisja ocenia Twoje wypowiedzi w 4 kryteriach: merytoryka, kompozycja, rozmowa i język.', 'Błąd kardynalny to nieznajomość treści lektury obowiązkowej i skutkuje przyznaniem 0 punktów z całego zadania.', 'Na maturze ustnej musisz zdobyć minimum 9 na 30 punktów (30%), aby zdać.', 'Spójność wypowiedzi jest kluczowa — upewnij się, że Twoja prezentacja ma jasny wstęp, rozwinięcie i zakończenie.', 'Podczas rozmowy z komisją staraj się odpowiadać wyczerpująco i unikać odpowiedzi jednozdaniowych.'];
+  final List<String> _maturaTips = [
+    'Komisja ocenia Twoje wypowiedzi w 4 kryteriach: merytoryka, kompozycja, rozmowa i język.',
+    'Błąd kardynalny to nieznajomość treści lektury obowiązkowej i skutkuje przyznaniem 0 punktów z całego zadania.',
+    'Na maturze ustnej musisz zdobyć minimum 9 na 30 punktów (30%), aby zdać.',
+    'Spójność wypowiedzi jest kluczowa — upewnij się, że Twoja prezentacja ma jasny wstęp, rozwinięcie i zakończenie.',
+    'Podczas rozmowy z komisją staraj się odpowiadać wyczerpująco i unikać odpowiedzi jednozdaniowych.',
+  ];
 
   @override
   void initState() {
@@ -49,18 +55,35 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(width: 64, height: 64, child: CircularProgressIndicator(strokeWidth: 5, valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFC5A880)))),
+                const SizedBox(
+                  width: 64,
+                  height: 64,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 5,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Color(0xFFC5A880),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 36),
                 Text(
                   'AI Egzaminator ocenia egzamin...',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.outfit(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Text(
                   'Przesłano transkrypcję monologu i rozmowy. RAG analizuje bazę wiedzy pod kątem kryteriów CKE.',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(color: const Color(0xFF8B95A5), fontSize: 13, height: 1.4),
+                  style: GoogleFonts.outfit(
+                    color: const Color(0xFF8B95A5),
+                    fontSize: 13,
+                    height: 1.4,
+                  ),
                 ),
                 const SizedBox(height: 48),
 
@@ -70,18 +93,29 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
                   decoration: BoxDecoration(
                     color: const Color(0xFF1E232A),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: const Color(0xFFC5A880).withOpacity(0.15)),
+                    border: Border.all(
+                      color: const Color(0xFFC5A880).withOpacity(0.15),
+                    ),
                   ),
                   child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.lightbulb_outline_rounded, color: Color(0xFFC5A880), size: 20),
+                          const Icon(
+                            Icons.lightbulb_outline_rounded,
+                            color: Color(0xFFC5A880),
+                            size: 20,
+                          ),
                           const SizedBox(width: 8),
                           Text(
                             'Porada Maturalna',
-                            style: GoogleFonts.outfit(color: const Color(0xFFC5A880), fontWeight: FontWeight.bold, fontSize: 12, letterSpacing: 1.0),
+                            style: GoogleFonts.outfit(
+                              color: const Color(0xFFC5A880),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              letterSpacing: 1.0,
+                            ),
                           ),
                         ],
                       ),
@@ -92,7 +126,11 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
                           _maturaTips[_tipIndex],
                           key: ValueKey<int>(_tipIndex),
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.outfit(color: Colors.white, fontSize: 14, height: 1.5),
+                          style: GoogleFonts.outfit(
+                            color: Colors.white,
+                            fontSize: 14,
+                            height: 1.5,
+                          ),
                         ),
                       ),
                     ],
@@ -115,17 +153,28 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 48),
+                const Icon(
+                  Icons.error_outline_rounded,
+                  color: Colors.redAccent,
+                  size: 48,
+                ),
                 const SizedBox(height: 16),
                 Text(
                   'Błąd generowania oceny',
-                  style: GoogleFonts.outfit(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.outfit(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   provider.errorMessage!,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(color: const Color(0xFF8B95A5), fontSize: 14),
+                  style: GoogleFonts.outfit(
+                    color: const Color(0xFF8B95A5),
+                    fontSize: 14,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
@@ -133,8 +182,13 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFC5A880),
                     foregroundColor: const Color(0xFF1E232A),
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   child: const Text('Spróbuj ponownie'),
                 ),
@@ -143,7 +197,12 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
                     provider.resetExam();
                     Navigator.of(context).popUntil((route) => route.isFirst);
                   },
-                  child: Text('Anuluj i wyjdź', style: TextStyle(color: Colors.white.withValues(alpha: 0.6))),
+                  child: Text(
+                    'Anuluj i wyjdź',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.6),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -156,7 +215,11 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
     if (result == null) {
       return const Scaffold(
         backgroundColor: Color(0xFF0C0E12),
-        body: Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFC5A880)))),
+        body: Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFC5A880)),
+          ),
+        ),
       );
     }
 
@@ -164,7 +227,9 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
     final scorePercent = result.score;
     final scorePoints = (scorePercent * 30) ~/ 100;
     final isPassed = scorePercent >= 30; // 30% or 9/30 points required to pass
-    final accentColor = isPassed ? const Color(0xFF4EAD77) : const Color(0xFFE55C5C);
+    final accentColor = isPassed
+        ? const Color(0xFF4EAD77)
+        : const Color(0xFFE55C5C);
 
     return Scaffold(
       backgroundColor: const Color(0xFF0C0E12),
@@ -174,7 +239,11 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
         automaticallyImplyLeading: false,
         title: Text(
           'Krok 4 z 4: Wyniki Symulacji',
-          style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+          style: GoogleFonts.outfit(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -188,7 +257,10 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
               decoration: BoxDecoration(
                 color: const Color(0xFF1E232A),
                 borderRadius: BorderRadius.circular(28),
-                border: Border.all(color: accentColor.withOpacity(0.2), width: 1.5),
+                border: Border.all(
+                  color: accentColor.withOpacity(0.2),
+                  width: 1.5,
+                ),
               ),
               child: Column(
                 children: [
@@ -199,17 +271,32 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
                       SizedBox(
                         width: 130,
                         height: 130,
-                        child: CircularProgressIndicator(value: scorePercent / 100, strokeWidth: 10, backgroundColor: Colors.white.withValues(alpha: 0.05), valueColor: AlwaysStoppedAnimation<Color>(accentColor)),
+                        child: CircularProgressIndicator(
+                          value: scorePercent / 100,
+                          strokeWidth: 10,
+                          backgroundColor: Colors.white.withValues(alpha: 0.05),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            accentColor,
+                          ),
+                        ),
                       ),
                       Column(
                         children: [
                           Text(
                             '$scorePercent%',
-                            style: GoogleFonts.outfit(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
+                            style: GoogleFonts.outfit(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
                           Text(
                             '$scorePoints / 30 pkt',
-                            style: GoogleFonts.outfit(fontSize: 14, color: const Color(0xFF8B95A5), fontWeight: FontWeight.w500),
+                            style: GoogleFonts.outfit(
+                              fontSize: 14,
+                              color: const Color(0xFF8B95A5),
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ],
                       ),
@@ -219,11 +306,22 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
 
                   // Pass Badge
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(color: accentColor.withOpacity(0.12), borderRadius: BorderRadius.circular(30)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: accentColor.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
                     child: Text(
                       isPassed ? 'EGZAMIN ZDANY' : 'EGZAMIN NIEZDANY',
-                      style: GoogleFonts.outfit(color: accentColor, fontWeight: FontWeight.bold, fontSize: 13, letterSpacing: 1.5),
+                      style: GoogleFonts.outfit(
+                        color: accentColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        letterSpacing: 1.5,
+                      ),
                     ),
                   ),
                 ],
@@ -234,7 +332,11 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
             // AI Egzaminator Summary Evaluation
             Text(
               'Uzasadnienie Komisji',
-              style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+              style: GoogleFonts.outfit(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(height: 12),
             Container(
@@ -244,14 +346,25 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: Colors.white.withValues(alpha: 0.03)),
               ),
-              child: Text(result.summary, style: GoogleFonts.outfit(color: Colors.white.withValues(alpha: 0.9), fontSize: 14, height: 1.6)),
+              child: Text(
+                result.summary,
+                style: GoogleFonts.outfit(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  fontSize: 14,
+                  height: 1.6,
+                ),
+              ),
             ),
             const SizedBox(height: 28),
 
             // Errors List Section
             Text(
               'Zarejestrowane Błędy i Uwagi',
-              style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+              style: GoogleFonts.outfit(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(height: 12),
             result.errors.isEmpty
@@ -260,11 +373,17 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
                     decoration: BoxDecoration(
                       color: const Color(0xFF4EAD77).withOpacity(0.08),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFF4EAD77).withOpacity(0.2)),
+                      border: Border.all(
+                        color: const Color(0xFF4EAD77).withOpacity(0.2),
+                      ),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.check_circle_rounded, color: Color(0xFF4EAD77), size: 28),
+                        const Icon(
+                          Icons.check_circle_rounded,
+                          color: Color(0xFF4EAD77),
+                          size: 28,
+                        ),
                         const SizedBox(width: 16),
                         Expanded(
                           child: Column(
@@ -272,10 +391,20 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
                             children: [
                               Text(
                                 'Świetna robota!',
-                                style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                                style: GoogleFonts.outfit(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
                               ),
                               const SizedBox(height: 2),
-                              Text('AI nie wykryło poważniejszych błędów merytorycznych, kardynalnych ani kompozycyjnych w Twojej wypowiedzi.', style: GoogleFonts.outfit(color: const Color(0xFF8B95A5), fontSize: 12)),
+                              Text(
+                                'AI nie wykryło poważniejszych błędów merytorycznych, kardynalnych ani kompozycyjnych w Twojej wypowiedzi.',
+                                style: GoogleFonts.outfit(
+                                  color: const Color(0xFF8B95A5),
+                                  fontSize: 12,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -284,12 +413,16 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
                   )
                 : ListView.builder(
                     shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
+                    physics: const ClampingScrollPhysics(),
                     itemCount: result.errors.length,
                     itemBuilder: (context, index) {
                       final error = result.errors[index];
-                      final isCardinal = error.errorType.toLowerCase().contains('kardynaln');
-                      final errorColor = isCardinal ? const Color(0xFFE55C5C) : const Color(0xFFE2A03F);
+                      final isCardinal = error.errorType.toLowerCase().contains(
+                        'kardynaln',
+                      );
+                      final errorColor = isCardinal
+                          ? const Color(0xFFE55C5C)
+                          : const Color(0xFFE2A03F);
 
                       return Card(
                         color: const Color(0xFF1E232A),
@@ -305,16 +438,38 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
                             children: [
                               Row(
                                 children: [
-                                  Icon(isCardinal ? Icons.cancel_outlined : Icons.warning_amber_rounded, color: errorColor, size: 20),
+                                  Icon(
+                                    isCardinal
+                                        ? Icons.cancel_outlined
+                                        : Icons.warning_amber_rounded,
+                                    color: errorColor,
+                                    size: 20,
+                                  ),
                                   const SizedBox(width: 8),
-                                  Text(
-                                    error.errorType,
-                                    style: GoogleFonts.outfit(color: errorColor, fontWeight: FontWeight.bold, fontSize: 14),
+                                  Flexible(
+                                    child: Text(
+                                      error.errorType,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      style: GoogleFonts.outfit(
+                                        color: errorColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 8),
-                              Text(error.whenIsOccurring, style: GoogleFonts.outfit(color: const Color(0xFF8B95A5), fontSize: 13, height: 1.4)),
+                              // FIXED: Limit maxLines for long error descriptions
+                              Text(
+                                error.whenIsOccurring,
+                                style: GoogleFonts.outfit(
+                                  color: const Color(0xFF8B95A5),
+                                  fontSize: 13,
+                                  height: 1.4,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -333,9 +488,17 @@ class _ExamReportScreenState extends State<ExamReportScreen> {
                 backgroundColor: const Color(0xFFC5A880),
                 foregroundColor: const Color(0xFF1E232A),
                 minimumSize: const Size.fromHeight(56),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
-              child: Text('Powrót do menu głównego', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold)),
+              child: Text(
+                'Powrót do menu głównego',
+                style: GoogleFonts.outfit(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             const SizedBox(height: 32),
           ],
