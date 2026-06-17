@@ -26,18 +26,18 @@ The backend uses a **RAG (retrieval‑augmented generation)** pipeline: the user
 ## Architecture diagram
 ```mermaid
 graph TD
-    subgraph Frontend (Flutter)
+    subgraph Frontend
         UI[UI components]
         Auth[Supabase auth]
         Provider[ExamProvider]
         UI --> Provider
         Provider --> Auth
     end
-    subgraph Backend (FastAPI)
+    subgraph Backend
         API[FastAPI routes]
         Service[AI services]
         DB[Vector DB (Qdrant)]
-        Redis[Redis rate‑limit]
+        Redis[Redis rate-limit]
         API --> Service
         Service --> DB
         API --> Redis
