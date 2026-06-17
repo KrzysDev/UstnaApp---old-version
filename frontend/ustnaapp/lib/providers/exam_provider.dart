@@ -98,6 +98,10 @@ class ExamProvider with ChangeNotifier {
   bool _isEvaluating = false;
   bool get isEvaluating => _isEvaluating;
 
+  // Exam session protection state
+  bool _isExamSessionActive = false;
+  bool get isExamSessionActive => _isExamSessionActive;
+
   EvaluationResult? _evaluationResult;
   EvaluationResult? get evaluationResult => _evaluationResult;
 
@@ -125,7 +129,14 @@ class ExamProvider with ChangeNotifier {
     _isTranscribingBoardAnswer = false;
     _boardAnswers = ['', ''];
     _isEvaluating = false;
+    _isExamSessionActive = false;
     _evaluationResult = null;
+    notifyListeners();
+  }
+
+  // Start exam session (protects against going back)
+  void startExamSession() {
+    _isExamSessionActive = true;
     notifyListeners();
   }
 
@@ -138,6 +149,9 @@ class ExamProvider with ChangeNotifier {
       notifyListeners();
       return;
     }
+
+    // Start exam session to protect against back navigation
+    startExamSession();
 
     _isLoading = true;
     _errorMessage = null;

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../providers/exam_provider.dart';
+import '../models/models.dart';
 import 'exam_monologue_screen.dart';
 
 class ExamPreparationScreen extends StatefulWidget {
@@ -103,94 +104,109 @@ class _ExamPreparationScreenState extends State<ExamPreparationScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF0C0E12),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        title: Text(
-          'Krok 1 z 4: Przygotowanie',
-          style: GoogleFonts.outfit(color: Colors.white),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close, color: Colors.white60),
-            onPressed: () => _handleExit(context),
-          ),
-        ],
+      // Prevent going back using hardware back button
+      body: WillPopScope(
+        onWillPop: () async => false,
+        child: _buildContent(provider, examSet),
       ),
-      body: Column(
-        children: [
-          // TIMER - ONLY THIS REBUILDS
-          Container(
-            margin: const EdgeInsets.all(24),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1E232A),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Selector<ExamProvider, int>(
-              selector: (_, p) => p.preparationTime,
-              builder: (_, time, __) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.timer, color: Color(0xFFC5A880)),
-                    const SizedBox(width: 12),
-                    Text(
-                      _formatDuration(time),
-                      style: GoogleFonts.outfit(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
+    );
+  }
 
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+  Widget _buildContent(ExamProvider provider, ExamSet examSet) {
+    return Column(
+      children: [
+        // App Bar - only visible when exam session is not active
+        if (!provider.isExamSessionActive)
+          AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            automaticallyImplyLeading: false,
+            title: Text(
+              'Krok 1 z 4: Przygotowanie',
+              style: GoogleFonts.outfit(color: Colors.white),
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.close_rounded, color: Colors.white60),
+                onPressed: () => _handleExit(context),
+              ),
+            ],
+          ),
+        if (!provider.isExamSessionActive) const SizedBox(height: 16),
+
+        // TIMER - ONLY THIS REBUILDS
+        Container(
+          margin: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1E232A),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Selector<ExamProvider, int>(
+            selector: (_, p) => p.preparationTime,
+            builder: (_, time, __) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildQuestionCard(
-                    title: 'Zadanie 1: Pytanie Jawne',
-                    content: examSet.question1.question,
-                  ),
-                  const SizedBox(height: 24),
-                  _buildQuestionCard(
-                    title: 'Zadanie 2: Pytanie Niejawne',
-                    content: examSet.question2.question,
-                    imageBytes: _cachedImage,
+                  const Icon(Icons.timer, color: Color(0xFFC5A880)),
+                  const SizedBox(width: 12),
+                  Text(
+                    _formatDuration(time),
+                    style: GoogleFonts.outfit(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
-              ),
-            ),
+              );
+            },
           ),
+        ),
 
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: ElevatedButton(
-                onPressed: () {
-                  // Zakonczenie przygotowania przechodzi do nastepnego kroku
-                  // (monolog), a nie wychodzi z sesji egzaminu.
-                  provider.stopPreparationTimer();
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const ExamMonologueScreen(),
-                    ),
-                  );
-                },
-                child: const Text('Zakończ przygotowanie'),
-              ),
+        // QUESTIONS
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildQuestionCard(
+                  title: 'Zadanie 1: Pytanie Jawne',
+                  content: examSet.question1.question,
+                ),
+                const SizedBox(height: 24),
+                _buildQuestionCard(
+                  title: 'Zadanie 2: Pytanie Niejawne',
+                  content: examSet.question2.question,
+                  imageBytes: _cachedImage,
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+
+        // BUTTONS
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: ElevatedButton(
+              onPressed: () {
+                // Start exam session to protect against back navigation
+                provider.startExamSession();
+                // Stop preparation timer and proceed to monologue
+                provider.stopPreparationTimer();
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const ExamMonologueScreen(),
+                  ),
+                );
+              },
+              child: const Text('Zakończ przygotowanie'),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
