@@ -23,42 +23,17 @@ The backend uses a **RAG (retrieval‑augmented generation)** pipeline: the user
 
 ---
 
-## Architecture diagram
-```mermaid
-graph TD
-    subgraph Frontend
-        UI[UI components]
-        Auth[Supabase auth]
-        Provider[ExamProvider]
-        UI --> Provider
-        Provider --> Auth
-    end
-    subgraph Backend
-        API[FastAPI routes]
-        Service[AI services]
-        DB[Vector DB Qdrant]
-        Redis[Redis rate-limit]
-        API --> Service
-        Service --> DB
-        API --> Redis
-    end
-    UI --> API
-    Auth --> API
-```
-
----
-
 ## Backend (FastAPI)
 - **Main entry point**: `backend/app/main.py`
 - **Endpoints** (prefixes):
-  - `/transcribing` – upload audio, return transcription (Google Speech)
+  - `/transcribing` – upload audio, return transcription (Speech recognition)
   - `/response-evaluation` – evaluate a student's answer, returns JSON score
   - `/examination-board-questions` – generate two follow‑up questions for the examiner
   - `/set-of-questions` – return a random set of official tasks
 - **LLM integration** (`app/services/ai_service.py`):
   - Uses **Ollama** (local or hosted) when `AI_TESTING=true`
   - Falls back to **OpenRouter** (e.g., Gemini) in production
-- **Vector DB** (`app/services/vector_db_service.py` – not shown, but referenced) stores knowledge chunks for RAG
+- **Vector DB** (Qdrant)
 - **Rate limiting** handled by `app/utils/limiter.py`
 - **Environment variables** (see `.env.example`):
   - `REDIS_URL` – Redis instance for rate limiting
@@ -80,13 +55,7 @@ graph TD
 
 ---
 
-## Getting started locally
-### Prerequisites
-- **Python 3.11+** and `pip`
-- **Node.js** (only for Flutter tooling)
-- **Flutter SDK** (stable channel) – see <https://flutter.dev>
-- **Docker** (optional, for running Qdrant & Redis containers)
-
+### Getting started locally
 ### 1. Clone the repository
 ```bash
 git clone <repo-url>
@@ -139,22 +108,5 @@ Frontend:
 flutter test
 flutter analyze
 ```
-
----
-
-## Contributing
-1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature/my‑feature`).
-3. Ensure code passes the linting and test suites.
-4. Open a pull request with a clear description of the changes.
-
-Please follow the existing code style (type hints in Python, null‑safety in Dart) and write docstrings/comments where the logic is non‑trivial.
-
----
-
-## License
-This project is licensed under the **MIT License** – see the `LICENSE` file for details.
-
----
 
 *Happy studying and good luck on your matura!*
