@@ -36,7 +36,7 @@ graph TD
     subgraph Backend
         API[FastAPI routes]
         Service[AI services]
-        DB[Vector DB (Qdrant)]
+        DB[Vector DB Qdrant]
         Redis[Redis rate-limit]
         API --> Service
         Service --> DB
