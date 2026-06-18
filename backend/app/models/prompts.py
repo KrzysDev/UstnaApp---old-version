@@ -1,162 +1,3 @@
-RETRIEVAL_QUERY_GENERATION_PROMPT = """
-Jesteś asystentem systemu RAG wspierającego ocenianie matury ustnej z języka polskiego.
-
-Twoim zadaniem jest wygenerowanie zestawu zapytań semantycznych do bazy wiedzy,
-które pozwolą pobrać fragmenty niezbędne do rzetelnej oceny wypowiedzi ucznia.
-
-Baza wiedzy zawiera:
-- kryteria oceniania matury ustnej (CKE)
-- lektury obowiązkowe
-- przykłady wypowiedzi maturalnych
-- konteksty literackie, historyczne i kulturowe
-
-#ZADANIE EGZAMINACYJNE 1
-<exam_question>
-{exam_question}
-</exam_question>
-
-#ZADANIE EGZAMINACYJNE 2
-Jeśli to pole jest puste, zignoruj je.
-<exam_question2>
-{exam_question2}
-</exam_question2>
-
-#WYPOWIEDŹ UCZNIA
-Poniższa wypowiedź zawiera odpowiedź ucznia na jedno lub oba zadania egzaminacyjne.
-<student_answer>
-{student_answer}
-</student_answer>
-
-#PRZEBIEG ROZMOWY Z KOMISJĄ
-<dialogue_transcript>
-Egzaminator: {examination_board_question1}
-Egzaminator: {examination_board_question2}
-
-Uczeń: {examination_board_questions_answer}
-</dialogue_transcript>
-
-#INSTRUKCJA
-Wygeneruj 4–6 zapytań semantycznych obejmujących:
-1. kryteria oceniania matury ustnej
-2. lektury / teksty kultury pojawiające się w wypowiedzi
-3. kontekst literacki / historyczny / kulturowy
-4. typowe błędy i wzorcowe odpowiedzi
-5. (opcjonalnie) pojęcia z rozmowy z komisją
-
-Zwróć WYŁĄCZNIE tablicę JSON stringów.
-"""
-
-
-RERANK_AND_FILTER_PROMPT = """
-Jesteś modułem rerankingu w systemie oceniania matury ustnej z języka polskiego.
-
-Otrzymujesz pytanie egzaminacyjne, odpowiedź ucznia oraz listę fragmentów
-pobranych z bazy wiedzy. Twoim zadaniem jest ocena trafności każdego fragmentu
-i odrzucenie tych, które nie wnoszą wartości do procesu oceniania.
-
-#PYTANIE EGZAMINACYJNE
-<exam_question>
-{exam_question}
-</exam_question>
-
-#WYPOWIEDŹ UCZNIA
-<student_answer>
-{student_answer}
-</student_answer>
-
-#POBRANE FRAGMENTY
-<retrieved_chunks>
-{retrieved_chunks}
-</retrieved_chunks>
-
-#INSTRUKCJA
-Dla każdego fragmentu oceń jego przydatność w skali 0–10:
-- 8–10: fragment bezpośrednio pomocny (konkretne kryterium, kluczowe fakty o lekturze, wzorcowa odpowiedź)
-- 5–7:  fragment pośrednio pomocny (kontekst, tło, uzupełnienie)
-- 0–4:  fragment nieprzydatny lub mylący — oznacz jako odrzucony
-
-Zwróć WYŁĄCZNIE tablicę JSON. Każdy element musi mieć pola:
-- "id": identyfikator fragmentu (skopiuj z wejścia)
-- "relevance_score": liczba całkowita 0–10
-- "keep": true jeśli relevance_score >= 5, false w przeciwnym razie
-- "reason": jedno zdanie uzasadnienia (po polsku)
-
-Nie dodawaj nic poza tablicą JSON.
-
-Przykład:
-[
-  {{
-    "id": "chunk_001",
-    "relevance_score": 9,
-    "keep": true,
-    "reason": "Fragment zawiera dokładne zasady przyznawania punktów w kryterium 1. dla zadania 1."
-  }},
-  {{
-    "id": "chunk_002",
-    "relevance_score": 3,
-    "keep": false,
-    "reason": "Fragment dotyczy innej lektury niż wskazana w pytaniu."
-  }}
-]
-"""
-
-CONTEXT_SYNTHESIS_PROMPT = """
-Jesteś modułem syntezy wiedzy w systemie oceniania matury ustnej z języka polskiego.
-
-Otrzymujesz pytanie egzaminacyjne, odpowiedź ucznia, pytania komisji z odpowiedziami oraz wyselekcjonowane fragmenty
-z bazy wiedzy. Twoim zadaniem jest skompresowanie tych fragmentów do zwięzłego,
-dobrze zorganizowanego bloku kontekstu dla egzaminatora-AI.
-
-#ZADANIE EGZAMINACYJNE 1
-<exam_question>
-{exam_question}
-</exam_question>
-
-#ZADANIE EGZAMINACYJNE 2
-Jeśli to pole jest puste, zignoruj je.
-<exam_question2>
-{exam_question2}
-</exam_question2>
-
-#WYPOWIEDŹ UCZNIA
-Poniższa wypowiedź zawiera odpowiedź ucznia na jedno lub oba zadania egzaminacyjne.
-<student_answer>
-{student_answer}
-</student_answer>
-
-#PRZEBIEG ROZMOWY Z KOMISJĄ (DIALOG)
-Poniższy zapis przedstawia pytania zadane przez komisję egzaminacyjną oraz odpowiedzi udzielone przez ucznia (jeśli te pola są puste, zignoruj je):
-<dialogue_transcript>
-Egzaminator: {examination_board_question1}
-Egzaminator: {examination_board_question2}
-
-Uczeń: {examination_board_questions_answer}
-</dialogue_transcript>
-
-#WYSELEKCJONOWANE FRAGMENTY
-<filtered_chunks>
-{filtered_chunks}
-</filtered_chunks>
-
-#INSTRUKCJA
-Stwórz blok kontekstu podzielony na maksymalnie cztery sekcje (pomijaj puste):
-
-1. KRYTERIA OCENIANIA — najważniejsze zasady i progi punktowe istotne dla tej odpowiedzi oraz rozmowy
-2. FAKTY O LEKTURZE / TEKŚCIE — kluczowe informacje o dziełach wymienionych w pytaniu,
-   wypowiedzi lub rozmowie (fabuła, bohaterowie, motywy, autorstwo, data)
-3. KONTEKST KULTUROWY / HISTORYCZNY — tło niezbędne do oceny przywołanych kontekstów
-4. WZORCE I BŁĘDY — przykłady poprawnych odpowiedzi lub typowych błędów dla tego zagadnienia i rozmowy
-
-Zasady:
-- Pisz zwięźle: każda sekcja to maksymalnie 5–7 zdań lub punktów.
-- Nie parafrazuj niepotrzebnie — zachowaj precyzję terminologiczną.
-- Wyraźnie zaznacz, jeśli uczeń popełnił błąd faktograficzny widoczny na tle fragmentów.
-- Nie oceniaj ucznia — to zadanie następnego kroku.
-
-Zwróć sam tekst bloku kontekstu, bez owijania go w JSON ani Markdown.
-"""
-
-
 EVALUATION_PROMPT = """
 Jesteś egzaminatorem z języka polskiego. Twoim zadaniem jest ocenienie ustnej
 wypowiedzi ucznia na podstawie zadanego pytania.
@@ -211,13 +52,7 @@ Wąski zakres z właściwą poprawnością to 2 punkty. Wąski zakres z licznymi
 to 1 punkt. Wypowiedź niekomunikatywna to 0 punktów.
 </scoring_rules>
 
-#DODATKOWY KONTEKST Z BAZY WIEDZY
-Poniżej znajdują się zweryfikowane informacje pobrane z bazy wiedzy, które pomogą
-Ci ocenić poprawność merytoryczną wypowiedzi ucznia. Traktuj je jako materiał
-referencyjny — jeśli wypowiedź ucznia jest sprzeczna z tymi informacjami,
-uwzględnij to w ocenie jako błąd rzeczowy lub kardynalny.
 
-{rag_context}
 
 #ZADANIE EGZAMINACYJNE 1
 Poniżej znajduje się treść pierwszego zadania, które zostało zadane uczniowi:
@@ -254,8 +89,7 @@ zdał egzamin (przelicz: próg 9/30 pkt = 30%, maksimum 30/30 pkt = 100%)
 summary — twoje uzasadnienie oceny w formie tekstu. Podaj punktację per kryterium
 (K1, K2, K3, K4) z krótkim uzasadnieniem każdej noty. Jeżeli w wypowiedzi ucznia
 są błędy, opisz gdzie się pojawiają i odnieś się bezpośrednio do konkretnych
-fragmentów wypowiedzi ucznia. Jeśli skorzystałeś z kontekstu RAG do wykrycia
-błędu merytorycznego, zaznacz to wprost.
+fragmentów wypowiedzi ucznia.
 
 errors — lista błędów popełnionych przez ucznia
 
