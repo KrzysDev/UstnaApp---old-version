@@ -2,10 +2,8 @@ from app.services.response_evaluation_service import ResponseEvaluationService
 
 service = ResponseEvaluationService()
 
-# Pytanie nr 8 z puli pytań maturalnych
 question = "Prawa boskie a prawa ludzkie. Omów zagadnienie na podstawie Antygony Sofoklesa. W swojej odpowiedzi uwzględnij również wybrany kontekst."
 
-# Przykładowa wypowiedź ucznia (zadanie 1 + elementy monologu)
 student_answer = """
 Zagadnienie praw boskich i ludzkich jest jednym z centralnych problemów tragedii Sofoklesa 
 zatytułowanej „Antygona". Główna bohaterka, Antygona, staje przed trudnym wyborem – 
