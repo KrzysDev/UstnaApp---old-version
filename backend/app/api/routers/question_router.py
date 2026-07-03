@@ -49,7 +49,6 @@ class QuestionsManager:
 QuestionsManager.load_questions()
 
 
-# Bez rate limitera — endpointy czytają wyłącznie z pamięci, są błyskawiczne
 @router.get("/all", response_class=PlainTextResponse)
 def get_all_questions_as_string():
     return QuestionsManager.get_all_as_string()

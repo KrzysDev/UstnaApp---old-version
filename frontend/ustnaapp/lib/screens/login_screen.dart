@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../services/user_service.dart';
 import 'dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,11 +24,30 @@ class _LoginScreenState extends State<LoginScreen> {
   void _checkExistingSession() {
     final session = Supabase.instance.client.auth.currentSession;
     if (session != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _handleStart();
-        }
-      });
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          if (mounted) {
+            try {
+              final userService = UserService();
+              await userService.getFreeTries();
+              _handleStart();
+            } catch (e) {
+              // Użytkownik nie istnieje w bazie — rozloguj
+              await Supabase.instance.client.auth.signOut();
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Konto zostało usunięte lub nie istnieje w systemie.',
+                    ),
+                  ),
+                );
+              }
+            }
+          }
+        });
+      }
     }
   }
 
